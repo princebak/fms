@@ -1,6 +1,16 @@
-import React from "react";
+import { uploadAFile } from "@/services/AwsS3Service";
+import React, { useState } from "react";
 
 const CreateFileForm = () => {
+  const [file, setFile] = useState(null);
+  const [name, setName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async () => {
+    //uploadAFile()
+  };
+
   return (
     <div
       className="bd-example d-flex flex-column gap-2"
