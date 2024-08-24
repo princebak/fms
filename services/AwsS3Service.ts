@@ -4,10 +4,10 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const AWS_ACCESS_KEY_ID = "angoranj@gmail.com";
-const AWS_SECRET_ACCESS_KEY = "!lejessismeT77";
-const AWS_REGION = "us-east-2";
-const AMAZON_S3_BUCKET_NAME = "fms";
+const AWS_ACCESS_KEY_ID = "AKIA5V6I7K5GBOUDTHEN";
+const AWS_SECRET_ACCESS_KEY = "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";
+const AWS_REGION = "us-east-1";
+const AMAZON_S3_BUCKET_NAME = "fsmstorage";
 
 const Bucket = AMAZON_S3_BUCKET_NAME;
 const s3 = new S3Client({
@@ -18,22 +18,26 @@ const s3 = new S3Client({
   },
 });
 
-export async function uploadAFile(myFile: MyFile) {
+export async function uploadAFile(myFile: any, key: any, contentType: string) {
   try {
     const res = await s3.send(
-      new PutObjectCommand({ Bucket, Key: myFile.name, Body: myFile.content })
+      new PutObjectCommand({
+        Bucket,
+        Key: key,
+        Body: myFile,
+        ContentType: contentType,
+      })
     );
 
-    console.log("uploadAFile Res", res);
-
-    return { message: "Files uploaded successfully" };
+    return { message: "File uploaded successfully" };
   } catch (error: any) {
     console.log("uploadAFile Error ", error);
     return { error: error.message };
   }
 }
 
-export async function downloadFile(key: string) {
+// The key is the unique fileName for S3
+export async function getDownloadFileUrl(key: string) {
   const command = new GetObjectCommand({ Bucket, Key: key });
   const src = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
