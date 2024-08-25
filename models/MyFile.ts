@@ -1,4 +1,4 @@
-import { fileStatus, fileType, userTokenStatus } from "@/utils/constants";
+import { fileStatus } from "@/utils/constants";
 import mongoose from "mongoose";
 
 // We are handling Folders and Files just as Files
@@ -25,11 +25,17 @@ const myFileSchema = new Schema<IMyFile>(
     size: {
       type: Number,
     },
+    contentNo: {
+      type: Number,
+    },
     downloadUrl: {
       type: String,
     },
     extension: {
       type: String,
+    },
+    visited: {
+      type: Date,
     },
     status: {
       type: String,

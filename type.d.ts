@@ -1,11 +1,13 @@
 interface IMyFile {
   constainer: string?;
-  isContainer:boolean;
+  isContainer: boolean;
   name: string;
   type: string?;
   downloadUrl: string?;
   extension: string?;
   size: number;
+  contentNo: number;
+  visited: Date;
   status: string?;
 }
 

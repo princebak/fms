@@ -2,6 +2,10 @@
 
 import MyFile from "@/models/MyFile";
 import { dbConnector } from "@/utils/dbConnector";
+import {
+  dbObjectToJsObject,
+  getContentWithPagination,
+} from "@/utils/myFunctions";
 
 export async function saveFileInfo(myFile: IMyFile) {
   try {
@@ -15,6 +19,7 @@ export async function saveFileInfo(myFile: IMyFile) {
   }
 }
 
+// even for Delete and change last visited Date
 export async function updateFileInfo(myFile: any) {
   try {
     await dbConnector();
@@ -26,4 +31,13 @@ export async function updateFileInfo(myFile: any) {
   } catch (error: any) {
     return { error: error.message };
   }
+}
+
+export async function getAllFiles() {
+  await dbConnector();
+
+  const files = await MyFile.find();
+  const filesPerPage = getContentWithPagination(files);
+  console.log(files);
+  return filesPerPage;
 }

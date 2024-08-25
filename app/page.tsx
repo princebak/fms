@@ -3,8 +3,35 @@
 import Image from "next/image";
 import CreateFileModal from "@/app/components/modal/CreateFileModal";
 import EditUserModal from "@/app/components/modal/EditUserModal";
+import { useEffect, useState } from "react";
+import { getAllFiles } from "@/services/MyFileService";
+import NoData from "@/app/components/NoData";
+import { getFileExtensionLogoPath } from "@/utils/myFunctions";
 
 export default function Home() {
+  const [myFiles, setMyFiles] = useState<any>([]);
+
+  // Pagination and Search
+  const [page, setPage] = useState<any>(1);
+  const [search, setSearch] = useState<any>("");
+  const [totalElements, setTotalElements] = useState<any>(0);
+  const [pageLimit, setPageLimit] = useState<any>();
+  const [totalPages, setTotalPages] = useState<any>(0);
+
+  useEffect(() => {
+    console.log("useEffect", page);
+    const loadProductList = async () => {
+      const res = await getAllFiles(); // currentUser._id, page, search //
+      console.log("TEST59 >> ", res);
+      setMyFiles(res.content);
+      setPageLimit(res.pageLimit);
+      setTotalElements(res.totalElements);
+      setPage(res.currentPage);
+      setTotalPages(res.totalPages);
+    };
+    loadProductList();
+  }, [page, search]);
+
   return (
     <>
       <div className="container">
@@ -119,464 +146,137 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-                <div className="row mt-4">
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-success text-white font-size-16">
-                                      A
-                                    </span>
+                {/* My Files and Folders */}
+
+                {myFiles.length > 0 ? (
+                  <>
+                    <div className="row mt-4">
+                      {myFiles.map((file: any, index: number) => (
+                        <div key={index} className="col-lg-3 col-sm-6">
+                          <div className="card shadow-none border">
+                            <div className="card-body p-3">
+                              <div className="d-flex flex-column gap-1">
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <div
+                                    style={{ width: "50px", height: "50px" }}
+                                  >
+                                    {file.isContainer ? (
+                                      <i className="bx bxs-folder h1 mb-0 text-warning"></i>
+                                    ) : (
+                                      <Image
+                                        width={100}
+                                        height={100}
+                                        src={getFileExtensionLogoPath(
+                                          file.extension
+                                        )}
+                                        alt="Logo"
+                                      />
+                                    )}
                                   </div>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Analytics
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                12 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 15 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="mdi mdi-file-document align-middle text-primary h1 mb-0"></i>{" "}
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Sketch Design
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                235 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 23 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                                      K
-                                    </span>
+                                  <div className="avatar-group">
+                                    <div className="avatar-group-item">
+                                      <a href="#" className="d-inline-block">
+                                        <Image
+                                          width={100}
+                                          height={100}
+                                          src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                          alt="img"
+                                          className="rounded-circle avatar-sm"
+                                        />
+                                      </a>
+                                    </div>
+                                    <div className="avatar-group-item">
+                                      <a href="#" className="d-inline-block">
+                                        <Image
+                                          width={100}
+                                          height={100}
+                                          src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                          alt="img"
+                                          className="rounded-circle avatar-sm"
+                                        />
+                                      </a>
+                                    </div>
+                                    <div className="avatar-group-item">
+                                      <a href="#" className="d-inline-block">
+                                        <div className="avatar-sm">
+                                          <span className="avatar-title rounded-circle bg-success text-white font-size-16">
+                                            A
+                                          </span>
+                                        </div>
+                                      </a>
+                                    </div>
                                   </div>
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Applications
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                20 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 45 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                                      K
-                                    </span>
+                                </div>
+                                <div className="d-flex flex-column gap-1">
+                                  <h5 className="font-size-15 text-truncate">
+                                    <a href={file.downloadUrl} target="_blank" className="text-body">
+                                      {file.name}
+                                    </a>
+                                  </h5>
+                                  <div className="d-flex flex-column gap-1">
+                                    <div className="d-flex justify-content-between">
+                                      <label className="text-muted text-truncate">
+                                        12 Files
+                                      </label>
+                                      <label className="text-muted text-truncate">
+                                        12 M
+                                      </label>
+                                    </div>
+                                    <div className="d-flex justify-content-between">
+                                      <label className="text-muted text-truncate">
+                                        15 min ago
+                                      </label>
+                                      <label className="text-muted text-truncate">
+                                        ...
+                                      </label>
+                                    </div>
                                   </div>
-                                </a>
+                                </div>
                               </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Applications
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                20 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 45 min ago
-                              </p>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  </div>
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-success text-white font-size-16">
-                                      A
-                                    </span>
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Analytics
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                12 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 15 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Sketch Design
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                235 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 23 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="d-flex justify-content-center mt-2">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination">
+                          <li className="page-item">
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
+                          </li>
+                          <li className="page-item">
+                            <a className="page-link" href="#">
+                              1
+                            </a>
+                          </li>
+                          <li className="page-item">
+                            <a className="page-link" href="#">
+                              2
+                            </a>
+                          </li>
+                          <li className="page-item">
+                            <a className="page-link" href="#">
+                              3
+                            </a>
+                          </li>
+                          <li className="page-item">
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
+                          </li>
+                        </ul>
+                      </nav>
                     </div>
-                  </div>
+                  </>
+                ) : (
+                  <NoData />
+                )}
 
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                                      K
-                                    </span>
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Applications
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                20 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 45 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card shadow-none border">
-                      <div className="card-body p-3">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <i className="bx bxs-folder h1 mb-0 text-warning"></i>
-                            </div>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                                      K
-                                    </span>
-                                  </div>
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="d-flex mt-3">
-                            <div className="overflow-hidden me-auto">
-                              <h5 className="font-size-15 text-truncate mb-1">
-                                <a href="#" className="text-body">
-                                  Applications
-                                </a>
-                              </h5>
-                              <p className="text-muted text-truncate mb-0">
-                                20 Files
-                              </p>
-                            </div>
-                            <div className="align-self-end ms-2">
-                              <p className="text-muted mb-0 font-size-13">
-                                <i className="mdi mdi-clock"></i> 45 min ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="d-flex justify-content-center">
-                  <nav aria-label="Page navigation example">
-                    <ul className="pagination">
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          2
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          3
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
+                {/* Recently Opened */}
 
                 <div className="d-flex flex-wrap">
                   <h5 className="font-size-16 me-3" id="recents">
