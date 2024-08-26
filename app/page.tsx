@@ -210,7 +210,11 @@ export default function Home() {
                                 </div>
                                 <div className="d-flex flex-column gap-1">
                                   <h5 className="font-size-15 text-truncate">
-                                    <a href={file.downloadUrl} target="_blank" className="text-body">
+                                    <a
+                                      href={`/api/downloadFile/${file._id}`}
+                                      target="_blank"
+                                      className="text-body"
+                                    >
                                       {file.name}
                                     </a>
                                   </h5>

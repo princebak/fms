@@ -27,7 +27,7 @@ export async function POST(req: any) {
      * 4. update the the saved file info with the downloadUrl
      * 5. respond with a message and the downloadUrl
      */
-    
+
     const savingFileInfo: IMyFile = {
       name: fileName,
       type: file.type,
@@ -36,6 +36,8 @@ export async function POST(req: any) {
       isContainer: false,
       constainer: null,
       downloadUrl: null,
+      contentNo: 0,
+      visited: new Date(),
       status: fileStatus.CREATED,
     };
     const savedFileInfoRes = await saveFileInfo(savingFileInfo);
@@ -59,21 +61,8 @@ export async function POST(req: any) {
       );
     }
 
-    const { downloadUrl } = await getDownloadFileUrl(savedFileInfoRes.id);
-    const updateFileInfoRes = await updateFileInfo({
-      id: savedFileInfoRes.id,
-      downloadUrl,
-    });
-
-    if (updateFileInfoRes.error) {
-      return NextResponse.json(
-        { error: updateFileInfoRes.error },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
-      { data: updateFileInfoRes, message: "File uploaded with success!" },
+      { data: savedFileInfoRes, message: "File uploaded with success!" },
       { status: 200 }
     );
   } catch (e: any) {
