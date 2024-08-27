@@ -31,7 +31,7 @@ const AccordionItem = ({ name, content, isOpen, onClick }: any) => {
         className={`${styles.answer_container} flex-column `}
         style={
           isOpen
-            ? { height: contentHeight.current.scrollHeight }
+            ? { height: contentHeight.current.scrollHeight + 10 }
             : { height: "0px" }
         }
       >

@@ -25,8 +25,6 @@ const CreateFileForm = () => {
       } else {
         setMessage("File uploaded successfully !");
       }
-
-      console.log("IMyfile >>", data);
     } else {
       setTimeout(() => {
         setMessage("File don't exist !");
@@ -38,7 +36,7 @@ const CreateFileForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>{message}</label>
+      {message ? <label>{message}</label> : ""}
 
       <div
         className="bd-example d-flex flex-column gap-2"

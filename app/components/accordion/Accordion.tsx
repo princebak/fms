@@ -9,7 +9,7 @@ const Accordion = ({ items }: any) => {
   };
 
   return (
-    <div>
+    <div className="d-flex flex-column gap-2">
       {items.map((item: any, index: any) => (
         <AccordionItem
           key={index}

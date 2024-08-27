@@ -10,7 +10,6 @@ export async function POST(req: any) {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const name = formData.get("name") as string;
-    console.log("Upoloaded <<", { name, file });
 
     // Make all the check logics(size...) here on file if needed
     if (!file) {

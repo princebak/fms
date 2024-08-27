@@ -6,6 +6,8 @@ import EditUserModal from "@/app/components/modal/EditUserModal";
 import { useEffect, useState } from "react";
 import { getAllFiles } from "@/services/MyFileService";
 import NoData from "@/app/components/NoData";
+import Loader from "@/app/components/Loader";
+import UpdateFileModal from "@/app/components/modal/UpdateFileModal";
 import { getFileExtensionLogoPath } from "@/utils/myFunctions";
 
 export default function Home() {
@@ -14,15 +16,15 @@ export default function Home() {
   // Pagination and Search
   const [page, setPage] = useState<any>(1);
   const [search, setSearch] = useState<any>("");
+  const [isLoading, setIsLoading] = useState(true);
   const [totalElements, setTotalElements] = useState<any>(0);
   const [pageLimit, setPageLimit] = useState<any>();
   const [totalPages, setTotalPages] = useState<any>(0);
 
   useEffect(() => {
-    console.log("useEffect", page);
+    console.log("isLoading>> ", isLoading);
     const loadProductList = async () => {
       const res = await getAllFiles(); // currentUser._id, page, search //
-      console.log("TEST59 >> ", res);
       setMyFiles(res.content);
       setPageLimit(res.pageLimit);
       setTotalElements(res.totalElements);
@@ -30,6 +32,7 @@ export default function Home() {
       setTotalPages(res.totalPages);
     };
     loadProductList();
+    setIsLoading(false);
   }, [page, search]);
 
   return (
@@ -148,7 +151,9 @@ export default function Home() {
                 </div>
                 {/* My Files and Folders */}
 
-                {myFiles.length > 0 ? (
+                {isLoading ? (
+                  <Loader />
+                ) : myFiles.length > 0 ? (
                   <>
                     <div className="row mt-4">
                       {myFiles.map((file: any, index: number) => (
@@ -224,7 +229,8 @@ export default function Home() {
                                         12 Files
                                       </label>
                                       <label className="text-muted text-truncate">
-                                        12 M
+                                        {Math.round(file.size / 1000)}
+                                        {" K"}
                                       </label>
                                     </div>
                                     <div className="d-flex justify-content-between">
@@ -232,7 +238,7 @@ export default function Home() {
                                         15 min ago
                                       </label>
                                       <label className="text-muted text-truncate">
-                                        ...
+                                        <UpdateFileModal id={file._id} />
                                       </label>
                                     </div>
                                   </div>

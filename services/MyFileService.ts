@@ -38,6 +38,5 @@ export async function getAllFiles() {
 
   const files = await MyFile.find();
   const filesPerPage = getContentWithPagination(files);
-  console.log(files);
-  return filesPerPage;
+  return dbObjectToJsObject(filesPerPage);
 }

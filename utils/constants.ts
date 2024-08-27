@@ -59,7 +59,7 @@ export const userType: UserType = {
 
 export const TOKEN_VALIDITY = 30;
 
-export const PAGE_LIMIT = 5;
+export const PAGE_LIMIT = 8;
 
 const extensionsBasePath = "/images/extensions/";
 
