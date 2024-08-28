@@ -1,6 +1,7 @@
 "use server";
 
 import MyFile from "@/models/MyFile";
+import { fileStatus } from "@/utils/constants";
 import { dbConnector } from "@/utils/dbConnector";
 import {
   dbObjectToJsObject,
@@ -21,6 +22,7 @@ export async function saveFileInfo(myFile: IMyFile) {
 
 // even for Delete and change last visited Date
 export async function updateFileInfo(myFile: any) {
+  console.log("myFile ", myFile);
   try {
     await dbConnector();
 
@@ -36,7 +38,13 @@ export async function updateFileInfo(myFile: any) {
 export async function getAllFiles() {
   await dbConnector();
 
-  const files = await MyFile.find();
+  const files = await MyFile.find({ status: { $ne: fileStatus.REMOVED } });
   const filesPerPage = getContentWithPagination(files);
   return dbObjectToJsObject(filesPerPage);
+}
+
+export async function findById(id: string) {
+  await dbConnector();
+  const fileInfo = await MyFile.findById(id);
+  return dbObjectToJsObject(fileInfo);
 }

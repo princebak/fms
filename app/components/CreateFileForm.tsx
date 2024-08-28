@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import { findById, updateFileInfo } from "@/services/MyFileService";
+import { fileStatus } from "@/utils/constants";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-const CreateFileForm = () => {
+const CreateFileForm = ({ id, closeModal, refreshData }: any) => {
   const [file, setFile] = useState<File>();
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const router = useRouter();
+
+  const closeModalAndReload = () => {
+    closeModal();
+    refreshData();
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -24,15 +33,52 @@ const CreateFileForm = () => {
         setMessage(data.error);
       } else {
         setMessage("File uploaded successfully !");
+        closeModalAndReload();
       }
     } else {
-      setTimeout(() => {
-        setMessage("File don't exist !");
-      });
+      if (id) {
+        // Rename the file
+        const res = await updateFileInfo({ id: id, name: name });
+        if (res.error) {
+          setMessage("Bad request.");
+        } else {
+          setMessage("File renamed with success !!");
+          closeModalAndReload();
+        }
+      } else {
+        setTimeout(() => {
+          setMessage("File don't exist !");
+        });
+      }
     }
 
     setIsLoading(false);
   };
+
+  const handleDelete = async (e: any) => {
+    setIsLoading(true);
+    const res = await updateFileInfo({ id: id, status: fileStatus.REMOVED });
+    if (res.error) {
+      setMessage("Bad request.");
+    } else {
+      setMessage("File deleted sucessfully !!");
+      closeModalAndReload();
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const loadFilInfo = async () => {
+      if (id) {
+        const fileInfo = await findById(id);
+        if (fileInfo) {
+          setName(fileInfo.name);
+        }
+      }
+    };
+    loadFilInfo();
+  }, []);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -43,7 +89,7 @@ const CreateFileForm = () => {
         style={{ border: "solid 1px #ddd", borderRadius: "5px" }}
       >
         <div
-          className="d-flex justify-between p-2"
+          className="d-flex justify-between flex-wrap p-2"
           style={{ borderBottom: "solid 1px #ddd" }}
         >
           <label style={{ color: "black" }}>Edit File</label>
@@ -51,19 +97,33 @@ const CreateFileForm = () => {
           {isLoading ? (
             <label>Loading...</label>
           ) : (
-            <button type="submit" className="btn btn-primary">
-              Save
-            </button>
+            <div className="d-flex justify-content-between gap-2">
+              {id ? (
+                <button onClick={handleDelete} className="btn btn-danger">
+                  Delete
+                </button>
+              ) : (
+                <></>
+              )}
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
+            </div>
           )}
         </div>
 
         <div className="d-flex flex-column gap-2 p-2">
-          <input
-            className="form-control"
-            type="file"
-            id="formFile"
-            onChange={(e: any) => setFile(e.target.files[0])}
-          />
+          {id ? (
+            <></>
+          ) : (
+            <input
+              className="form-control"
+              type="file"
+              id="formFile"
+              onChange={(e: any) => setFile(e.target.files[0])}
+            />
+          )}
+
           <input
             type="text"
             className="form-control"
@@ -71,6 +131,7 @@ const CreateFileForm = () => {
             placeholder="Rename the file here"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
       </div>

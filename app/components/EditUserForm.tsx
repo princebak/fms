@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import TemplateImage from "./TemplateImage";
 
-const EditUserForm = () => {
+const EditUserForm = ({ refreshData }: any) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -27,7 +27,6 @@ const EditUserForm = () => {
     }
   };
 
-
   return (
     <div
       className="bd-example d-flex flex-column gap-2"
@@ -42,16 +41,6 @@ const EditUserForm = () => {
       </div>
 
       <div className="d-flex flex-column gap-2 p-2">
-        {/* <TemplateImage
-          imageId="001"
-          imagePath="/images/fsm_logo1.png"
-          defaultImagePath="/images/fsm_logo1.png"
-          imageStyle={{}}
-          imageName="I001"
-          setDefaultImageCallbak={setDefaultImage}
-          handleImageChangeCallback={handleImageChange}
-        /> */}
-
         <input className="form-control" type="file" id="formFile" />
 
         <input
@@ -59,6 +48,7 @@ const EditUserForm = () => {
           className="form-control"
           id="exampleFormControlInput1"
           placeholder="Enter user name"
+          required
         />
       </div>
     </div>

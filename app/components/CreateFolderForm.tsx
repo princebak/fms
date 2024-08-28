@@ -21,6 +21,7 @@ const CreateFolderForm = () => {
           className="form-control"
           id="exampleFormControlInput1"
           placeholder="Enter Folder name"
+          required
         />
       </div>
     </div>

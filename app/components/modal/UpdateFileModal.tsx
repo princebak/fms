@@ -1,29 +1,18 @@
 import React, { useState } from "react";
 import CreateFileForm from "@/app/components/CreateFileForm";
-import CreateFolderForm from "@/app/components/CreateFolderForm";
-import Accordion from "@/app/components/accordion/Accordion";
 
-const CreateFileModal = () => {
+const UpdateFileModal = ({ id, refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);
-  const accordionItems = [
-    {
-      title: "New File",
-      content: <CreateFileForm />,
-    },
-    {
-      title: "New Folder",
-      content: <CreateFolderForm />,
-    },
-  ];
 
-  const toggleModal = () => {
+  const toggleModal = (e: any) => {
+    e.preventDefault();
     setIsOpen(!isOpen);
   };
 
   return (
     <>
-      <button className="btn btn-primary" onClick={toggleModal}>
-        + Create new
+      <button id={id} onClick={toggleModal} className="moreButton">
+        <label style={{ cursor: "pointer" }}>{"..."}</label>
       </button>
       {isOpen && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -33,7 +22,7 @@ const CreateFileModal = () => {
               style={{ boxShadow: "0 0 40px gray" }}
             >
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <Accordion items={accordionItems} />
+                <CreateFileForm id={id} closeModal={() => setIsOpen(false)} refreshData={refreshData}/>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 d-flex justify-content-end ">
                 <button
@@ -52,4 +41,4 @@ const CreateFileModal = () => {
   );
 };
 
-export default CreateFileModal;
+export default UpdateFileModal;

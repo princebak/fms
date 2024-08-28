@@ -20,6 +20,7 @@ export default function Home() {
   const [totalElements, setTotalElements] = useState<any>(0);
   const [pageLimit, setPageLimit] = useState<any>();
   const [totalPages, setTotalPages] = useState<any>(0);
+  const [refreshTime, setRefreshTime] = useState<any>(null);
 
   useEffect(() => {
     console.log("isLoading>> ", isLoading);
@@ -33,7 +34,7 @@ export default function Home() {
     };
     loadProductList();
     setIsLoading(false);
-  }, [page, search]);
+  }, [page, search, refreshTime]);
 
   return (
     <>
@@ -100,36 +101,6 @@ export default function Home() {
                     <div className="mt-4 mt-sm-0 d-flex align-items-center justify-content-sm-end">
                       <div className="mb-2 me-2">
                         <CreateFileModal />
-
-                        {/*   <div
-                          className="modal fade"
-                          id="editFSMModal"
-                          tabIndex={-1}
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div className="modal-dialog">
-                            <div className="modal-content">
-                              <div className="modal-header">
-                                <h5
-                                  className="modal-title"
-                                  id="exampleModalLabel"
-                                >
-                                  Create
-                                </h5>
-                                <button
-                                  type="button"
-                                  className="btn-close"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                ></button>
-                              </div>
-                              <div className="modal-body">
-                                <Accordion items={accordionItems} />
-                              </div>
-                            </div>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -238,7 +209,12 @@ export default function Home() {
                                         15 min ago
                                       </label>
                                       <label className="text-muted text-truncate">
-                                        <UpdateFileModal id={file._id} />
+                                        <UpdateFileModal
+                                          id={file._id}
+                                          refreshData={() =>
+                                            setRefreshTime(new Date())
+                                          }
+                                        />
                                       </label>
                                     </div>
                                   </div>

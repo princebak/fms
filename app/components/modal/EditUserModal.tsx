@@ -3,22 +3,18 @@ import EditUserForm from "@/app/components/EditUserForm";
 import Accordion from "@/app/components/accordion/Accordion";
 import Image from "next/image";
 
-const EditUserModal = () => {
+const EditUserModal = ({ refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleModal = () => {
+  const toggleModal = (e: any) => {
+    e.preventDefault();
     setIsOpen(!isOpen);
   };
-
   return (
     <>
       <a
         href="#"
         className="d-flex gap-1 justify-content-top nav-link text-white "
-        onClick={(e) => {
-          e.preventDefault();
-          toggleModal();
-        }}
+        onClick={toggleModal}
       >
         <Image
           className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
