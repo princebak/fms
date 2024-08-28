@@ -21,20 +21,50 @@ export default function Home() {
   const [pageLimit, setPageLimit] = useState<any>();
   const [totalPages, setTotalPages] = useState<any>(0);
   const [refreshTime, setRefreshTime] = useState<any>(null);
+  const [temporarySearchValue, setTemporarySearchValue] = useState<any>("");
+  const [pages, setPages] = useState([1]);
+
+  const handlePageChange = (e: any, currentPage: number) => {
+    e.preventDefault();
+    setPage(currentPage);
+  };
 
   useEffect(() => {
     console.log("isLoading>> ", isLoading);
+    let totPages = 0;
     const loadProductList = async () => {
-      const res = await getAllFiles(); // currentUser._id, page, search //
+      const res = await getAllFiles("", page, search); // currentUser._id, page, search //
+      console.log("RES", res);
       setMyFiles(res.content);
       setPageLimit(res.pageLimit);
       setTotalElements(res.totalElements);
       setPage(res.currentPage);
       setTotalPages(res.totalPages);
+      totPages = res.totalPages;
+      return true;
     };
-    loadProductList();
-    setIsLoading(false);
+    const load = async()=>{
+      const res = await loadProductList()
+      if(res){
+        let myPagesNo = [];
+        for (let index = 1; index <= totPages; index++) {
+          myPagesNo.push(index);
+        }
+        setPages([...myPagesNo]);
+        setIsLoading(false);
+        console.log("RES2", { totPages, myPagesNo });
+      }
+    }
+    load()
+    
   }, [page, search, refreshTime]);
+  console.log("RES3", { pages });
+
+  const handleSearch = () => {
+    setTimeout(() => {
+      setSearch(temporarySearchValue);
+    }, 3000);
+  };
 
   return (
     <>
@@ -79,6 +109,11 @@ export default function Home() {
                           type="text"
                           className="form-control bg-light border-light rounded"
                           placeholder="Search..."
+                          value={temporarySearchValue}
+                          onChange={(e) =>
+                            setTemporarySearchValue(e.target.value)
+                          }
+                          onInput={handleSearch}
                         />
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -230,27 +265,38 @@ export default function Home() {
                       <nav aria-label="Page navigation example">
                         <ul className="pagination">
                           <li className="page-item">
-                            <a className="page-link" href="#">
+                            <a
+                              className="page-link"
+                              href="#"
+                              onClick={(e) => {
+                                handlePageChange(e, Number.parseInt(page) - 1);
+                              }}
+                            >
                               Previous
                             </a>
                           </li>
+                          {pages.map((p) => (
+                            <li key={p} className="page-item">
+                              <a
+                                className="page-link"
+                                href="#"
+                                onClick={(e) => {
+                                  handlePageChange(e, p);
+                                }}
+                              >
+                                {p}
+                              </a>
+                            </li>
+                          ))}
+
                           <li className="page-item">
-                            <a className="page-link" href="#">
-                              1
-                            </a>
-                          </li>
-                          <li className="page-item">
-                            <a className="page-link" href="#">
-                              2
-                            </a>
-                          </li>
-                          <li className="page-item">
-                            <a className="page-link" href="#">
-                              3
-                            </a>
-                          </li>
-                          <li className="page-item">
-                            <a className="page-link" href="#">
+                            <a
+                              className="page-link"
+                              href="#"
+                              onClick={(e) => {
+                                handlePageChange(e, Number.parseInt(page) + 1);
+                              }}
+                            >
                               Next
                             </a>
                           </li>

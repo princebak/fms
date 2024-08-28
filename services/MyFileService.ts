@@ -35,11 +35,15 @@ export async function updateFileInfo(myFile: any) {
   }
 }
 
-export async function getAllFiles() {
+export async function getAllFiles(
+  userId: string,
+  page: string,
+  search: string
+) {
   await dbConnector();
 
   const files = await MyFile.find({ status: { $ne: fileStatus.REMOVED } });
-  const filesPerPage = getContentWithPagination(files);
+  const filesPerPage = getContentWithPagination(files, page, search);
   return dbObjectToJsObject(filesPerPage);
 }
 

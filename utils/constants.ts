@@ -48,8 +48,8 @@ export const userStatus: UserStatus = {
 
 export const fileStatus: FileStatus = {
   CREATED: "created",
-  REMOVED: "active",
-  RESTORED: "validated",
+  REMOVED: "removed",
+  RESTORED: "restored",
 };
 
 export const userType: UserType = {
@@ -59,7 +59,7 @@ export const userType: UserType = {
 
 export const TOKEN_VALIDITY = 30;
 
-export const PAGE_LIMIT = 8;
+export const PAGE_LIMIT = 4;
 
 const extensionsBasePath = "/images/extensions/";
 
