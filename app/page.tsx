@@ -4,14 +4,23 @@ import Image from "next/image";
 import CreateFileModal from "@/app/components/modal/CreateFileModal";
 import EditUserModal from "@/app/components/modal/EditUserModal";
 import { useEffect, useState } from "react";
-import { getAllFiles } from "@/services/MyFileService";
+import {
+  getAllFiles,
+  getRecentFiles,
+  updateFileInfo,
+} from "@/services/MyFileService";
 import NoData from "@/app/components/NoData";
 import Loader from "@/app/components/Loader";
 import UpdateFileModal from "@/app/components/modal/UpdateFileModal";
-import { getFileExtensionLogoPath } from "@/utils/myFunctions";
+import {
+  getFileExtensionLogoPath,
+  getFormatedDate,
+  getLastVisitedTimeInterval,
+} from "@/utils/myFunctions";
 
 export default function Home() {
   const [myFiles, setMyFiles] = useState<any>([]);
+  const [recentFiles, setRecentFiles] = useState<any>([]);
 
   // Pagination and Search
   const [page, setPage] = useState<any>(1);
@@ -28,21 +37,26 @@ export default function Home() {
     setPage(currentPage);
   };
 
+  const updateLastVisitedTime = async (id: string) => {
+    await updateFileInfo({ id, visited: new Date() });
+    setRefreshTime(new Date());
+  };
+
   useEffect(() => {
-    console.log("isLoading>> ", isLoading);
     let totPages = 0;
     const loadProductList = async () => {
       const res = await getAllFiles("", page, search); // currentUser._id, page, search //
-      console.log("RES", res);
       setMyFiles(res.content);
       setPageLimit(res.pageLimit);
       setTotalElements(res.totalElements);
       setPage(res.currentPage);
       setTotalPages(res.totalPages);
       totPages = res.totalPages;
+
       return true;
     };
-    const load = async () => {
+
+    const loadData = async () => {
       const res = await loadProductList();
       if (res) {
         let myPagesNo = [];
@@ -51,12 +65,20 @@ export default function Home() {
         }
         setPages([...myPagesNo]);
         setIsLoading(false);
-        console.log("RES2", { totPages, myPagesNo });
       }
     };
-    load();
+
+    loadData();
   }, [page, search, refreshTime]);
-  console.log("RES3", { pages });
+
+  useEffect(() => {
+    const loadRecentFiles = async () => {
+      const res = await getRecentFiles(""); // currentUser._id
+      setRecentFiles(res);
+    };
+
+    loadRecentFiles();
+  }, [refreshTime]);
 
   const handleSearch = (e: any) => {
     setTimeout(() => {
@@ -162,8 +184,17 @@ export default function Home() {
                             <div className="card-body p-3">
                               <div className="d-flex flex-column gap-1">
                                 <div className="d-flex justify-content-between align-items-center">
-                                  <div
-                                    style={{ width: "50px", height: "50px" }}
+                                  <a
+                                    href={`/api/downloadFile/${file._id}`}
+                                    target="_blank"
+                                    style={{
+                                      width: "50px",
+                                      height: "50px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      updateLastVisitedTime(file._id)
+                                    }
                                   >
                                     {file.isContainer ? (
                                       <i className="bx bxs-folder h1 mb-0 text-warning"></i>
@@ -177,7 +208,7 @@ export default function Home() {
                                         alt="Logo"
                                       />
                                     )}
-                                  </div>
+                                  </a>
 
                                   <div className="avatar-group">
                                     <div className="avatar-group-item">
@@ -219,6 +250,9 @@ export default function Home() {
                                       href={`/api/downloadFile/${file._id}`}
                                       target="_blank"
                                       className="text-body"
+                                      onClick={() =>
+                                        updateLastVisitedTime(file._id)
+                                      }
                                     >
                                       {file.name}
                                     </a>
@@ -226,16 +260,18 @@ export default function Home() {
                                   <div className="d-flex flex-column gap-1">
                                     <div className="d-flex justify-content-between">
                                       <label className="text-muted text-truncate">
-                                        12 Files
+                                        File
                                       </label>
                                       <label className="text-muted text-truncate">
                                         {Math.round(file.size / 1000)}
-                                        {" K"}
+                                        {" KB"}
                                       </label>
                                     </div>
                                     <div className="d-flex justify-content-between">
                                       <label className="text-muted text-truncate">
-                                        15 min ago
+                                        {getLastVisitedTimeInterval(
+                                          file.visited
+                                        )}
                                       </label>
                                       <label className="text-muted text-truncate">
                                         <UpdateFileModal
@@ -310,15 +346,6 @@ export default function Home() {
                   <h5 className="font-size-16 me-3" id="recents">
                     Recently Opened
                   </h5>
-                  <div className="ms-auto">
-                    <a href="#all" className="fw-medium text-reset">
-                      <span
-                        style={{ textDecoration: "underline", color: "blue" }}
-                      >
-                        Sees All
-                      </span>
-                    </a>
-                  </div>
                 </div>
                 <hr className="mt-2" />
                 <div className="table-responsive">
@@ -326,7 +353,7 @@ export default function Home() {
                     <thead className="table-light">
                       <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Date modified</th>
+                        <th scope="col">Visited date</th>
                         <th scope="col">Size</th>
                         <th scope="col" colSpan={2}>
                           Members
@@ -334,582 +361,79 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>{" "}
-                            index.html
-                          </a>
-                        </td>
-                        <td>12-10-2020, 09:45</td>
-                        <td>09 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <div className="avatar-sm">
-                                  <span className="avatar-title rounded-circle bg-success text-white font-size-16">
-                                    A
-                                  </span>
-                                </div>
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
+                      {recentFiles.map((file: any) => (
+                        <tr key={file._id}>
+                          <td>
+                            <a href="#" className="text-dark fw-medium">
+                              <i className="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>{" "}
+                              {file.name}
                             </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
+                          </td>
+                          <td>{getFormatedDate(file.visited, true, true)}</td>
+                          <td>
+                            {Math.round(file.size / 1000)}
+                            {" KB"}
+                          </td>
+                          <td>
+                            <div className="avatar-group">
+                              <div className="avatar-group-item">
+                                <a href="#" className="d-inline-block">
+                                  <img
+                                    src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                                    alt="img"
+                                    className="rounded-circle avatar-sm"
+                                  />
+                                </a>
+                              </div>
+                              <div className="avatar-group-item">
+                                <a href="#" className="d-inline-block">
+                                  <img
+                                    src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                                    alt="img"
+                                    className="rounded-circle avatar-sm"
+                                  />
+                                </a>
+                              </div>
+                              <div className="avatar-group-item">
+                                <a href="#" className="d-inline-block">
+                                  <div className="avatar-sm">
+                                    <span className="avatar-title rounded-circle bg-success text-white font-size-16">
+                                      A
+                                    </span>
+                                  </div>
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-folder-zip font-size-16 align-middle text-warning me-2"></i>{" "}
-                            Project-A.zip
-                          </a>
-                        </td>
-                        <td>11-10-2020, 17:05</td>
-                        <td>115 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
+                          </td>
+                          <td>
+                            <div className="dropdown">
+                              <a
+                                className="font-size-16 text-muted"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-haspopup="true"
+                              >
+                                <i className="mdi mdi-dots-horizontal"></i>
                               </a>
+                              <div className="dropdown-menu dropdown-menu-end">
+                                <a className="dropdown-item" href="#">
+                                  Open
+                                </a>
+                                <a className="dropdown-item" href="#">
+                                  Edit
+                                </a>
+                                <a className="dropdown-item" href="#">
+                                  Rename
+                                </a>
+                                <div className="dropdown-divider"></div>
+                                <a className="dropdown-item" href="#">
+                                  Remove
+                                </a>
+                              </div>
                             </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-image font-size-16 align-middle text-muted me-2"></i>{" "}
-                            Img-1.jpeg
-                          </a>
-                        </td>
-                        <td>11-10-2020, 13:26</td>
-                        <td>86 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <div className="avatar-sm">
-                                  <span className="avatar-title rounded-circle bg-info text-white font-size-16">
-                                    K
-                                  </span>
-                                </div>
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-text-box font-size-16 align-middle text-muted me-2"></i>{" "}
-                            update list.txt
-                          </a>
-                        </td>
-                        <td>10-10-2020, 11:32</td>
-                        <td>08 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-folder font-size-16 align-middle text-warning me-2"></i>{" "}
-                            Project B
-                          </a>
-                        </td>
-                        <td>10-10-2020, 10:51</td>
-                        <td>72 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <div className="avatar-sm">
-                                  <span className="avatar-title rounded-circle bg-danger text-white font-size-16">
-                                    3+
-                                  </span>
-                                </div>
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-text-box font-size-16 align-middle text-muted me-2"></i>{" "}
-                            Changes list.txt
-                          </a>
-                        </td>
-                        <td>09-10-2020, 17:05</td>
-                        <td>07 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-image font-size-16 align-middle text-success me-2"></i>{" "}
-                            Img-2.png
-                          </a>
-                        </td>
-                        <td>09-10-2020, 15:12</td>
-                        <td>31 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <div className="avatar-sm">
-                                  <span className="avatar-title rounded-circle bg-pink text-white font-size-16">
-                                    L
-                                  </span>
-                                </div>
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="mdi mdi-folder font-size-16 align-middle text-warning me-2"></i>{" "}
-                            Project C
-                          </a>
-                        </td>
-                        <td>09-10-2020, 10:11</td>
-                        <td>20 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <div className="avatar-sm">
-                                  <span className="avatar-title rounded-circle bg-success text-white font-size-16">
-                                    A
-                                  </span>
-                                </div>
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <a href="#" className="text-dark fw-medium">
-                            <i className="bx bxs-file font-size-16 align-middle text-primary me-2"></i>{" "}
-                            starter-page.html
-                          </a>
-                        </td>
-                        <td>08-10-2020, 03:22</td>
-                        <td>11 KB</td>
-                        <td>
-                          <div className="avatar-group">
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar8.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                            <div className="avatar-group-item">
-                              <a href="#" className="d-inline-block">
-                                <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                  alt="img"
-                                  className="rounded-circle avatar-sm"
-                                />
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="dropdown">
-                            <a
-                              className="font-size-16 text-muted"
-                              role="button"
-                              data-bs-toggle="dropdown"
-                              aria-haspopup="true"
-                            >
-                              <i className="mdi mdi-dots-horizontal"></i>
-                            </a>
-                            <div className="dropdown-menu dropdown-menu-end">
-                              <a className="dropdown-item" href="#">
-                                Open
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Edit
-                              </a>
-                              <a className="dropdown-item" href="#">
-                                Rename
-                              </a>
-                              <div className="dropdown-divider"></div>
-                              <a className="dropdown-item" href="#">
-                                Remove
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

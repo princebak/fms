@@ -47,6 +47,25 @@ export async function getAllFiles(
   return dbObjectToJsObject(filesPerPage);
 }
 
+export async function getRecentFiles(userId: string) {
+  await dbConnector();
+
+  const files = await MyFile.find({
+    status: { $ne: fileStatus.REMOVED },
+    visited: { $ne: null },
+  });
+  // Sorting
+  files.sort((a, b) => {
+    const dateA = new Date(a.visited);
+    const dateB = new Date(b.visited);
+    return dateB.getTime() - dateA.getTime();
+  });
+
+  const first8Files = files.slice(0, 8);
+
+  return dbObjectToJsObject(first8Files);
+}
+
 export async function findById(id: string) {
   await dbConnector();
   const fileInfo = await MyFile.findById(id);

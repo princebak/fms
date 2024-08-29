@@ -90,3 +90,80 @@ export const getFileExtensionLogoPath = (extension: string) => {
   );
   return pathObj ? pathObj.logoUrl : "/images/extensions/default.png";
 };
+
+export const getLastVisitedTimeInterval = (
+  lastVisitedDateTime: Date | undefined | null
+) => {
+  if (!lastVisitedDateTime) {
+    return "Not read yet";
+  }
+  const currentDateTime = new Date();
+  const lastVisitedDateTimeGood = new Date(lastVisitedDateTime);
+  const secondes = Math.round(
+    (currentDateTime.getTime() - lastVisitedDateTimeGood.getTime()) / 1000
+  );
+
+  if (secondes < 60) {
+    return `${secondes} s ago`;
+  } else {
+    const munites = Math.round(secondes / 60);
+    if (munites < 60) {
+      return `${munites} m ago`;
+    } else {
+      const hours = Math.round(munites / 60);
+      if (hours < 24) {
+        return `${hours} h ago`;
+      } else {
+        const days = Math.round(hours / 24);
+        if (days < 30) {
+          return `${days} d ago`;
+        } else {
+          const months = Math.round(days / 30);
+          if (months < 12) {
+            return `${months} M ago`;
+          } else {
+            const years = Math.round(months / 12);
+            return `${years} Y ago`;
+          }
+        }
+      }
+    }
+  }
+};
+
+export const getFormatedDate = (
+  date: Date,
+  displayHour = false,
+  displayMinute = false,
+  displaySecond = false
+) => {
+  date = new Date(date);
+
+  function padTo2Digits(num: any) {
+    return num.toString().padStart(2, "0");
+  }
+
+  const mainDate = [
+    date.getFullYear(),
+    padTo2Digits(date.getMonth() + 1),
+    padTo2Digits(date.getDate()),
+  ].join("-");
+
+  const time = [];
+
+  if (displayHour) {
+    time.push(padTo2Digits(date.getHours()));
+  }
+
+  if (displayMinute) {
+    time.push(padTo2Digits(date.getMinutes()));
+  }
+
+  if (displaySecond) {
+    time.push(padTo2Digits(date.getSeconds()));
+  }
+
+  const timeString = time.join(":");
+
+  return `${mainDate} ${timeString}`;
+};
