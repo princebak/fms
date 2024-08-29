@@ -17,6 +17,7 @@ import {
   getFormatedDate,
   getLastVisitedTimeInterval,
 } from "@/utils/myFunctions";
+import DownloadButton from "./components/DownloadButton";
 
 export default function Home() {
   const [myFiles, setMyFiles] = useState<any>([]);
@@ -211,7 +212,12 @@ export default function Home() {
                                   </a>
 
                                   <div className="avatar-group">
-                                    <div className="avatar-group-item">
+                                    <DownloadButton
+                                      fileName={file.name}
+                                      fileKey={file._id}
+                                      downloadLink={`/api/downloadFile/${file._id}`}
+                                    />
+                                    {/* <div className="avatar-group-item">
                                       <a href="#" className="d-inline-block">
                                         <Image
                                           width={100}
@@ -241,7 +247,7 @@ export default function Home() {
                                           </span>
                                         </div>
                                       </a>
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </div>
                                 <div className="d-flex flex-column gap-1">
@@ -349,93 +355,77 @@ export default function Home() {
                 </div>
                 <hr className="mt-2" />
                 <div className="table-responsive">
-                  <table className="table align-middle table-nowrap table-hover mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Visited date</th>
-                        <th scope="col">Size</th>
-                        <th scope="col" colSpan={2}>
-                          Members
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentFiles.map((file: any) => (
-                        <tr key={file._id}>
-                          <td>
-                            <a href="#" className="text-dark fw-medium">
-                              <i className="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>{" "}
-                              {file.name}
-                            </a>
-                          </td>
-                          <td>{getFormatedDate(file.visited, true, true)}</td>
-                          <td>
-                            {Math.round(file.size / 1000)}
-                            {" KB"}
-                          </td>
-                          <td>
-                            <div className="avatar-group">
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <img
-                                    src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                                    alt="img"
-                                    className="rounded-circle avatar-sm"
-                                  />
-                                </a>
-                              </div>
-                              <div className="avatar-group-item">
-                                <a href="#" className="d-inline-block">
-                                  <div className="avatar-sm">
-                                    <span className="avatar-title rounded-circle bg-success text-white font-size-16">
-                                      A
-                                    </span>
-                                  </div>
-                                </a>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div className="dropdown">
-                              <a
-                                className="font-size-16 text-muted"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                              >
-                                <i className="mdi mdi-dots-horizontal"></i>
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-end">
-                                <a className="dropdown-item" href="#">
-                                  Open
-                                </a>
-                                <a className="dropdown-item" href="#">
-                                  Edit
-                                </a>
-                                <a className="dropdown-item" href="#">
-                                  Rename
-                                </a>
-                                <div className="dropdown-divider"></div>
-                                <a className="dropdown-item" href="#">
-                                  Remove
-                                </a>
-                              </div>
-                            </div>
-                          </td>
+                  {isLoading ? (
+                    <Loader />
+                  ) : recentFiles.length < 1 ? (
+                    <NoData />
+                  ) : (
+                    <table className="table align-middle table-nowrap table-hover mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Visited date</th>
+                          <th scope="col">Size</th>
+                          <th scope="col" colSpan={2}>
+                            Download
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {recentFiles.map((file: any) => (
+                          <tr key={file._id}>
+                            <td>
+                              <a href="#" className="text-dark fw-medium">
+                                <i className="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>{" "}
+                                {file.name}
+                              </a>
+                            </td>
+                            <td>{getFormatedDate(file.visited, true, true)}</td>
+                            <td>
+                              {Math.round(file.size / 1000)}
+                              {" KB"}
+                            </td>
+                            <td>
+                              <div className="avatar-group">
+                                <DownloadButton
+                                  fileName={file.name}
+                                  fileKey={file._id}
+                                  downloadLink={`/api/downloadFile/${file._id}`}
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <div className="dropdown">
+                                <a
+                                  className="font-size-16 text-muted"
+                                  role="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-haspopup="true"
+                                >
+                                  <i className="mdi mdi-dots-horizontal"></i>
+                                </a>
+                                <div className="dropdown-menu dropdown-menu-end">
+                                  <a className="dropdown-item" href="#">
+                                    Open
+                                  </a>
+                                  <a className="dropdown-item" href="#">
+                                    Edit
+                                  </a>
+                                  <a className="dropdown-item" href="#">
+                                    Rename
+                                  </a>
+                                  <div className="dropdown-divider"></div>
+                                  <a className="dropdown-item" href="#">
+                                    Remove
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             </div>

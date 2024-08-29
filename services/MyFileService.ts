@@ -7,6 +7,7 @@ import {
   dbObjectToJsObject,
   getContentWithPagination,
 } from "@/utils/myFunctions";
+import { getDownloadFileUrl } from "./AwsS3Service";
 
 export async function saveFileInfo(myFile: IMyFile) {
   try {
@@ -70,4 +71,20 @@ export async function findById(id: string) {
   await dbConnector();
   const fileInfo = await MyFile.findById(id);
   return dbObjectToJsObject(fileInfo);
+}
+
+export async function downloadFile(
+  key: string,
+  fileName: string
+): Promise<Blob> {
+  try {
+    // Create a new Blob object
+    const { downloadUrl: url } = await getDownloadFileUrl(key);
+    const blob = await fetch(url).then((response) => response.blob());
+
+    return dbObjectToJsObject(blob);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    throw error;
+  }
 }
