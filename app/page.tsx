@@ -21,7 +21,6 @@ export default function Home() {
   const [pageLimit, setPageLimit] = useState<any>();
   const [totalPages, setTotalPages] = useState<any>(0);
   const [refreshTime, setRefreshTime] = useState<any>(null);
-  const [temporarySearchValue, setTemporarySearchValue] = useState<any>("");
   const [pages, setPages] = useState([1]);
 
   const handlePageChange = (e: any, currentPage: number) => {
@@ -43,9 +42,9 @@ export default function Home() {
       totPages = res.totalPages;
       return true;
     };
-    const load = async()=>{
-      const res = await loadProductList()
-      if(res){
+    const load = async () => {
+      const res = await loadProductList();
+      if (res) {
         let myPagesNo = [];
         for (let index = 1; index <= totPages; index++) {
           myPagesNo.push(index);
@@ -54,15 +53,14 @@ export default function Home() {
         setIsLoading(false);
         console.log("RES2", { totPages, myPagesNo });
       }
-    }
-    load()
-    
+    };
+    load();
   }, [page, search, refreshTime]);
   console.log("RES3", { pages });
 
-  const handleSearch = () => {
+  const handleSearch = (e: any) => {
     setTimeout(() => {
-      setSearch(temporarySearchValue);
+      setSearch(e.target.value);
     }, 3000);
   };
 
@@ -109,11 +107,7 @@ export default function Home() {
                           type="text"
                           className="form-control bg-light border-light rounded"
                           placeholder="Search..."
-                          value={temporarySearchValue}
-                          onChange={(e) =>
-                            setTemporarySearchValue(e.target.value)
-                          }
-                          onInput={handleSearch}
+                          onChange={handleSearch}
                         />
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +272,9 @@ export default function Home() {
                           {pages.map((p) => (
                             <li key={p} className="page-item">
                               <a
-                                className="page-link"
+                                className={`page-link ${
+                                  p === page ? "active" : ""
+                                }`}
                                 href="#"
                                 onClick={(e) => {
                                   handlePageChange(e, p);
