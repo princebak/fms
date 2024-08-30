@@ -27,6 +27,7 @@ export default function Home() {
   const [page, setPage] = useState<any>(1);
   const [search, setSearch] = useState<any>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingRecent, setIsLoadingRecent] = useState(true);
   const [totalElements, setTotalElements] = useState<any>(0);
   const [pageLimit, setPageLimit] = useState<any>();
   const [totalPages, setTotalPages] = useState<any>(0);
@@ -76,14 +77,17 @@ export default function Home() {
     const loadRecentFiles = async () => {
       const res = await getRecentFiles(""); // currentUser._id
       setRecentFiles(res);
+      setIsLoadingRecent(false);
     };
 
     loadRecentFiles();
   }, [refreshTime]);
 
   const handleSearch = (e: any) => {
+    setIsLoading(true);
     setTimeout(() => {
       setSearch(e.target.value);
+      setIsLoading(false);
     }, 3000);
   };
 
@@ -358,7 +362,7 @@ export default function Home() {
                 </div>
                 <hr className="mt-2" />
                 <div className="table-responsive">
-                  {isLoading ? (
+                  {isLoadingRecent ? (
                     <div className="p-8">
                       <Loader />
                     </div>
