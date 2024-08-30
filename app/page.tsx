@@ -89,8 +89,8 @@ export default function Home() {
 
   return (
     <>
-      <div className="container">
-        <div className="row">
+      <div className="container" style={{ height: "100vh" }}>
+        <div className="row" style={{ height: "100vh" }}>
           <header>
             <div className="px-3 py-2 bg-dark text-white">
               <div className="container">
@@ -175,7 +175,9 @@ export default function Home() {
                 {/* My Files and Folders */}
 
                 {isLoading ? (
-                  <Loader />
+                  <div className="p-8">
+                    <Loader />
+                  </div>
                 ) : myFiles.length > 0 ? (
                   <>
                     <div className="row mt-4">
@@ -217,6 +219,7 @@ export default function Home() {
                                       fileKey={file._id}
                                       downloadLink={`/api/downloadFile/${file._id}`}
                                     />
+                                    {/* sharing files users */}
                                     {/* <div className="avatar-group-item">
                                       <a href="#" className="d-inline-block">
                                         <Image
@@ -356,7 +359,9 @@ export default function Home() {
                 <hr className="mt-2" />
                 <div className="table-responsive">
                   {isLoading ? (
-                    <Loader />
+                    <div className="p-8">
+                      <Loader />
+                    </div>
                   ) : recentFiles.length < 1 ? (
                     <NoData />
                   ) : (
@@ -395,31 +400,10 @@ export default function Home() {
                               </div>
                             </td>
                             <td>
-                              <div className="dropdown">
-                                <a
-                                  className="font-size-16 text-muted"
-                                  role="button"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                >
-                                  <i className="mdi mdi-dots-horizontal"></i>
-                                </a>
-                                <div className="dropdown-menu dropdown-menu-end">
-                                  <a className="dropdown-item" href="#">
-                                    Open
-                                  </a>
-                                  <a className="dropdown-item" href="#">
-                                    Edit
-                                  </a>
-                                  <a className="dropdown-item" href="#">
-                                    Rename
-                                  </a>
-                                  <div className="dropdown-divider"></div>
-                                  <a className="dropdown-item" href="#">
-                                    Remove
-                                  </a>
-                                </div>
-                              </div>
+                              <UpdateFileModal
+                                id={file._id}
+                                refreshData={() => setRefreshTime(new Date())}
+                              />
                             </td>
                           </tr>
                         ))}

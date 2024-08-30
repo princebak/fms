@@ -11,9 +11,17 @@ const UpdateFileModal = ({ id, refreshData }: any) => {
 
   return (
     <>
-      <button id={id} onClick={toggleModal} className="moreButton">
-        <label style={{ cursor: "pointer" }}>{"..."}</label>
-      </button>
+      <a
+        className="font-size-16 text-muted"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        id={id}
+        onClick={toggleModal}
+      >
+        <i className="mdi mdi-dots-horizontal"></i>
+      </a>
+
       {isOpen && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -22,7 +30,11 @@ const UpdateFileModal = ({ id, refreshData }: any) => {
               style={{ boxShadow: "0 0 40px gray" }}
             >
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <CreateFileForm id={id} closeModal={() => setIsOpen(false)} refreshData={refreshData}/>
+                <CreateFileForm
+                  id={id}
+                  closeModal={() => setIsOpen(false)}
+                  refreshData={refreshData}
+                />
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 d-flex justify-content-end ">
                 <button
