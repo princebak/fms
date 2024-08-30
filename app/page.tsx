@@ -375,9 +375,8 @@ export default function Home() {
                           <th scope="col">Name</th>
                           <th scope="col">Visited date</th>
                           <th scope="col">Size</th>
-                          <th scope="col" colSpan={2}>
-                            Download
-                          </th>
+                          <th scope="col">Download</th>
+                          <th scope="col">More</th>
                         </tr>
                       </thead>
                       <tbody>
