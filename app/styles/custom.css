@@ -13,3 +13,20 @@
 .moreButton:hover {
   background-color: #eee;
 }
+
+.stickyNavbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: solid 1px #eee;
+}
+
+#stickyNavbar {
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  padding: 20px;
+  padding-bottom: 20px;
+}
