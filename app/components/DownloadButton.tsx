@@ -1,56 +1,57 @@
 import { downloadFile } from "@/services/MyFileService";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import Loader from "./Loader";
 
 const DownloadButton = ({
   fileName,
-  fileKey,
   downloadLink,
 }: {
   fileName: string;
-  fileKey: string;
   downloadLink: string;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleClick = async () => {
     try {
-      /*   const blob: any = await fetch(`/api/downloadFile/${fileKey}/locally`);
+      console.log("Downloading :", downloadLink);
+      setIsLoading(true);
+      const response = await fetch(downloadLink);
+      const arrayBuffer = await response.arrayBuffer();
+      const theType = response.headers.get("content-type") as string;
+      const blob = new Blob([arrayBuffer], { type: theType });
 
-      const urlCreator = window.URL || window.webkitURL;
-      const blobUrl = urlCreator.createObjectURL(blob); */
+      // Create a link element
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
 
-      const a = document.createElement("a");
-      a.href = downloadLink; // blobUrl
-      a.download = fileName;
-      a.target = "_blank";
-      a.click();
+      // Trigger the download
+      link.click();
 
-      setTimeout(() => {
-        window.URL.revokeObjectURL(downloadLink); // blobUrl
-      }, 100);
-
-      alert(`File "${fileName}" downloaded successfully.`);
+      // Clean up
+      URL.revokeObjectURL(link.href);
+      setIsLoading(false);
     } catch (error: any) {
-      alert(`Error downloading file: ${error.message}`);
+      console.log(`Error downloading file: ${error.message}`);
     }
-
-    /*     const a = document.createElement("a");
-    a.href = downloadLink;
-    a.download = fileName;
-
-    a.click();
-
-    URL.revokeObjectURL(a.href); */
   };
+
   return (
-    <a href={downloadLink} target="_blank">
-      <Image
-        width={30}
-        height={30}
-        src="/images/download.png"
-        alt="Download"
-        style={{ cursor: "pointer" }}
-      />
-    </a>
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Image
+          width={30}
+          height={30}
+          src="/images/download.png"
+          alt="Download"
+          style={{ cursor: "pointer" }}
+          onClick={handleClick}
+        />
+      )}
+    </>
   );
 };
 
