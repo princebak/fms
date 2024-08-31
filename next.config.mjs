@@ -16,5 +16,15 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverComponentsExternalPackages: [
+      "@smithy/util-retry",
+      "smithy",
+      "@aws-sdk/client-s3",
+      "@aws-sdk/middleware-sdk-s3",
+      "@aws-sdk/s3-request-presigner",
+      "aws-sdk",
+    ],
+  },
 };
 export default nextConfig;

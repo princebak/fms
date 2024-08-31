@@ -184,7 +184,6 @@ export default function Home() {
                         <div className="avatar-group">
                           <DownloadButton
                             fileName={file.name}
-                            fileKey={file._id}
                             downloadLink={`/api/downloadFile/${file._id}`}
                           />
                           {/* sharing files users */}
@@ -353,7 +352,6 @@ export default function Home() {
                     <div className="avatar-group">
                       <DownloadButton
                         fileName={file.name}
-                        fileKey={file._id}
                         downloadLink={`/api/downloadFile/${file._id}`}
                       />
                     </div>
