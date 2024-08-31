@@ -1,9 +1,10 @@
-import { Inter } from "next/font/google";
+"use client";
+
 import "./globals.css";
 import "@/app/styles/custom.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import Image from "next/image";
+import EditUserModal from "./components/modal/EditUserModal";
 
 export default function RootLayout({
   children,
@@ -30,7 +31,43 @@ export default function RootLayout({
 
         <title>FMS</title>
       </head>
-      <body className={inter.className}>{children}</body>
+      <body>
+        <div className="container" style={{ height: "100vh" }}>
+          <header className="row">
+            <div className="container">
+              <div className="px-3 py-2 bg-dark text-white row">
+                <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start p-2">
+                  <a
+                    href="#bootstrap"
+                    className="d-flex gap-1 justify-items-center align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
+                  >
+                    <Image
+                      className="bi d-block mx-auto mb-1"
+                      width="24"
+                      height="24"
+                      src={"/images/fsm_logo1.png"}
+                      alt="Image"
+                    />
+                    <span>Files Management System</span>
+                  </a>
+
+                  <ul className="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                    <li>
+                      <EditUserModal />
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div style={{ marginTop: "-10px" }} className="row">
+            <div className="card">
+              <div className="card-body">{children}</div>
+            </div>
+          </div>
+        </div>
+      </body>
     </html>
   );
 }

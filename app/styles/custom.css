@@ -30,3 +30,13 @@
   padding: 20px;
   padding-bottom: 20px;
 }
+
+#formWrapper form {
+  min-width: 295px;
+  max-width: 500px;
+}
+
+/*For test only, to remove*/
+.redBorder {
+  border: solid red 1px;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import CreateFileForm from "@/app/components/CreateFileForm";
-import CreateFolderForm from "@/app/components/CreateFolderForm";
+import CreateFileForm from "@/app/components/modal/forms/CreateFileForm";
+import CreateFolderForm from "@/app/components/modal/forms/CreateFolderForm";
 import Accordion from "@/app/components/accordion/Accordion";
 
 const CreateFileModal = () => {
@@ -16,7 +16,7 @@ const CreateFileModal = () => {
     },
   ];
 
-  const toggleModal = (e:any) => {
+  const toggleModal = (e: any) => {
     e.preventDefault();
     setIsOpen(!isOpen);
   };

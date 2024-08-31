@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CreateFileForm from "@/app/components/CreateFileForm";
+import CreateFileForm from "@/app/components/modal/forms/CreateFileForm";
 
 const UpdateFileModal = ({ id, refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);

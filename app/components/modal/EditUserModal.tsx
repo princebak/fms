@@ -1,30 +1,37 @@
 import React, { useState } from "react";
-import EditUserForm from "@/app/components/EditUserForm";
-import Accordion from "@/app/components/accordion/Accordion";
+import EditUserForm from "@/app/components/modal/forms/EditUserForm";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import UserLogButton from "../UserLogButton";
 
 const EditUserModal = ({ refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const toggleModal = (e: any) => {
     e.preventDefault();
     setIsOpen(!isOpen);
   };
+
   return (
     <>
-      <a
-        href="#"
-        className="d-flex gap-1 justify-content-top nav-link text-white "
-        onClick={toggleModal}
-      >
-        <Image
-          className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
-          width="24"
-          height="24"
-          src={"https://bootdey.com/img/Content/avatar/avatar3.png"}
-          alt="Image"
-        />
-        Prince Ilunga
-      </a>
+      <div className="d-flex gap-2 justify-content-center align-items-center">
+        <a
+          href="#"
+          className="d-flex gap-1 justify-content-center align-items-center text-white "
+          onClick={toggleModal}
+        >
+          <Image
+            className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
+            width="100"
+            height="100"
+            src={"https://bootdey.com/img/Content/avatar/avatar3.png"}
+            alt="Image"
+          />
+          Prince Ilunga
+        </a>
+        <UserLogButton />
+      </div>
+
       {isOpen && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

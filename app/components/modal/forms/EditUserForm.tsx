@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React, { useState } from "react";
-import TemplateImage from "./TemplateImage";
+import TemplateImage from "../../TemplateImage";
 
 const EditUserForm = ({ refreshData }: any) => {
   const [file, setFile] = useState(null);
