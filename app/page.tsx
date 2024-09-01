@@ -82,6 +82,8 @@ export default function Home() {
     };
 
     const loadData = async () => {
+      setIsLoading(true);
+
       const res = await loadProductList();
       if (res) {
         let myPagesNo = [];
@@ -89,8 +91,8 @@ export default function Home() {
           myPagesNo.push(index);
         }
         setPages([...myPagesNo]);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     loadData();

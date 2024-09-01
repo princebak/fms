@@ -77,3 +77,23 @@ export const FileExtensionLogo = [
   { logoUrl: `${extensionsBasePath}exe.png`, extensions: ["exe"] },
   { logoUrl: `${extensionsBasePath}html.png`, extensions: ["html", "htm"] },
 ];
+
+export const logMessage = {
+  USER_NOT_ACTIVE:
+    "User is not active, click on the validation link in your mail box please.",
+};
+
+export const emailMetadata = {
+  SUBJECT_EMAIL_VALIDATION: "Email validation",
+  SUBJECT_RESET_PW_VALIDATION: "Reset password validation",
+  SENDER_NAME: "ShapShap",
+  EMAIL_VALIDATION_LINK: "/api/email-validation",
+  RESET_PW_VALIDATION_LINK: "/api/reset-pw-validation",
+};
+
+export const localLink = {
+  TERMS_AND_CONDITIONS: "/assets/pdfs/ecom-terms-conditions.pdf",
+  PRIVACY_POLICY: "/assets/pdfs/ecom-privacy-policy.pdf",
+  // APP_BASE_PATH: "http://localhost:3000",
+  APP_BASE_PATH: "https://fms-taupe.vercel.app",
+};
