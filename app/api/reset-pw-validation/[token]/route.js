@@ -1,7 +1,7 @@
-import AccessToken from "models/AccessToken";
+import AccessToken from "@/models/AccessToken";
 import { NextResponse } from "next/server";
-import { localLink, userTokenStatus } from "utils/constants";
-import { dbConnector } from "utils/dbConnector";
+import { localLink, userTokenStatus } from "@/utils/constants";
+import { dbConnector } from "@/utils/dbConnector";
 
 export async function GET(req, { params: { token } }) {
   try {

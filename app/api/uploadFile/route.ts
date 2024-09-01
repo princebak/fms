@@ -1,6 +1,6 @@
 // pages/api/uploadImage.ts
-import { getDownloadFileUrl, uploadAFile } from "@/services/AwsS3Service";
-import { saveFileInfo, updateFileInfo } from "@/services/MyFileService";
+import { uploadAFile } from "@/services/AwsS3Service";
+import { saveFileInfo } from "@/services/MyFileService";
 import { fileStatus } from "@/utils/constants";
 import { getFileExtension } from "@/utils/myFunctions";
 import { NextResponse } from "next/server";

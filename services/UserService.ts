@@ -8,7 +8,6 @@ import {
   logMessage,
   userStatus,
   userTokenStatus,
-  userType,
 } from "@/utils/constants";
 import { sendEmailWithEmailJs } from "./NotificationService";
 import AccessToken from "@/models/AccessToken";
@@ -239,4 +238,36 @@ export async function sendResetPwLink(email: string) {
   } catch (error) {
     return { error: "Server error !" };
   }
+}
+
+export async function authenticate(data: any) {
+  await dbConnector();
+
+  const user = await User.findOne({
+    email: data.email,
+  }).select("+password");
+
+  if (!user) {
+    throw new Error("Email is not registered");
+  }
+
+  const { password, ...userWithoutPassword } = user._doc;
+
+  if (user.status === userStatus.CREATED) {
+    await sendEmailWithEmailJs({
+      receiver: user,
+      subject: emailMetadata.SUBJECT_EMAIL_VALIDATION,
+      validationLink: emailMetadata.EMAIL_VALIDATION_LINK,
+    });
+
+    throw new Error(logMessage.USER_NOT_ACTIVE);
+  }
+
+  const isPasswordCorrect = await compare(data.password, user.password);
+
+  if (!isPasswordCorrect) {
+    throw new Error("Password is incorrect");
+  }
+
+  return userWithoutPassword;
 }
