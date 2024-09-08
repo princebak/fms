@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
 import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
@@ -33,7 +32,6 @@ const LoginForm = () => {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-
   if (
     (!currentUser && session?.user) ||
     (currentUser && currentUser.email !== session?.user?.email)
@@ -92,6 +90,7 @@ const LoginForm = () => {
         label="Email address"
         value={form.email}
         handleChange={handleChange}
+        required
       />
       <FormInput
         id={"password"}
@@ -100,6 +99,7 @@ const LoginForm = () => {
         label="Password"
         value={form.password}
         handleChange={handleChange}
+        required
       />
 
       <FormSubmitButton label="Submit" isLoading={isLoading} />

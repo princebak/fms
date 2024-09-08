@@ -18,8 +18,14 @@ const handler = NextAuth({
           type: "password",
         },
       },
+
       async authorize(credentials, req) {
-        console.log("credentials >> ", credentials);
+        if(!credentials?.email){
+          throw new Error("Email is required.")
+        }
+        if(!credentials?.password){
+          throw new Error("Password is required.")
+        }
         return await authenticate(credentials);
       },
     }),

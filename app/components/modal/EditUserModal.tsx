@@ -1,14 +1,18 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import EditUserForm from "@/app/components/modal/forms/EditUserForm";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import UserLogButton from "../UserLogButton";
+import { useSelector } from "react-redux";
 
 const EditUserModal = ({ refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { currentUser } = useSelector((state: any) => state.user);
+  console.log("currentUser >>", currentUser);
+
   const toggleModal = (e: any) => {
     e.preventDefault();
     setIsOpen(!isOpen);
@@ -17,21 +21,26 @@ const EditUserModal = ({ refreshData }: any) => {
   return (
     <>
       <div className="d-flex gap-2 justify-content-center align-items-center">
-        <a
-          href="#"
-          className="d-flex gap-1 justify-content-center align-items-center text-white "
-          onClick={toggleModal}
-        >
-          <Image
-            className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
-            width="100"
-            height="100"
-            src={"https://bootdey.com/img/Content/avatar/avatar3.png"}
-            alt="Image"
-          />
-          Prince Ilunga
-        </a>
-        <UserLogButton />
+        {currentUser ? (
+          <a
+            href="#"
+            className="d-flex gap-1 justify-content-center align-items-center text-white "
+            onClick={toggleModal}
+          >
+            <Image
+              className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
+              width="100"
+              height="100"
+              src={"https://bootdey.com/img/Content/avatar/avatar3.png"}
+              alt="Image"
+            />
+            {currentUser?.name}
+          </a>
+        ) : (
+          "Login"
+        )}
+
+        <UserLogButton currentUser={currentUser} />
       </div>
 
       {isOpen && (
