@@ -22,7 +22,7 @@ export async function GET(
       });
 
       return NextResponse.redirect(
-        `${localLink.APP_BASE_PATH}/change-password?nsapi=${userAccessToken._id}`
+        `${localLink.APP_BASE_PATH}/confirm-reset-password?nsapi=${userAccessToken._id}`
       );
     } else {
       return NextResponse.redirect(

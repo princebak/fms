@@ -94,6 +94,6 @@ export const emailMetadata = {
 export const localLink = {
   TERMS_AND_CONDITIONS: "/assets/pdfs/ecom-terms-conditions.pdf",
   PRIVACY_POLICY: "/assets/pdfs/ecom-privacy-policy.pdf",
-  // APP_BASE_PATH: "http://localhost:3000",
+  //APP_BASE_PATH: "http://localhost:3000",
   APP_BASE_PATH: "https://fms-taupe.vercel.app",
 };

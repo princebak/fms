@@ -99,21 +99,26 @@ export async function updateUser(data: any) {
   }
 }
 
-export async function changePassword({
-  token,
-  newPassword,
-}: {
+export async function changePassword(data: {
   token: string;
-  newPassword: string;
+  password: string;
+  confirmPassword: string;
 }) {
   try {
     await dbConnector();
 
-    const userAccessToken = await AccessToken.findById(token).populate("owner");
-
+    const userAccessToken = await AccessToken.findById(data.token).populate(
+      "owner"
+    );
+    // validating fields
+    const validateRes = await areAllFieldsValid(data);
+    console.log("validateRes > ", validateRes);
+    if (!validateRes.isValid) {
+      return { error: validateRes.message };
+    }
     const user = userAccessToken.owner;
 
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    const hashedPassword = await bcrypt.hash(data.password, 12);
 
     if (userAccessToken && userAccessToken.status === userTokenStatus.PENDING) {
       await AccessToken.findByIdAndUpdate(userAccessToken._id, {
