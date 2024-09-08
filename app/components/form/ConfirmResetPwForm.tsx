@@ -6,6 +6,8 @@ import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
 import FormSubmitButton from "./elements/FormSubmitButton";
 import { useRouter } from "next/navigation";
+import FooterElement from "./elements/FooterElement";
+import Footer from "./elements/Footer";
 
 const ConfimResetPwForm = () => {
   const router = useRouter();
@@ -15,40 +17,37 @@ const ConfimResetPwForm = () => {
   };
 
   return (
-    <FormWrapper formLabel="Confirm reset password">
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Email address"
-          type="email"
-          id="email"
-          name="name"
-          placeHolder="Enter email address"
-          title="Enter email address"
-        />
-        <FormInput
-          label="Password"
-          type="password"
-          id="password"
-          name="password"
-        />
-        <FormInput
-          label="Confirm password"
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-        />
+    <FormWrapper formLabel="Confirm reset password" onSubmit={handleSubmit}>
+      <FormInput
+        label="Email address"
+        type="email"
+        id="email"
+        name="name"
+        title="Enter email address"
+      />
+      <FormInput
+        label="Password"
+        type="password"
+        id="password"
+        name="password"
+      />
+      <FormInput
+        label="Confirm password"
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+      />
 
-        <FormSubmitButton label="Submit" />
-      </form>
+      <FormSubmitButton label="Submit" />
 
-      <div
-        className="d-flex flex-column mt-3"
-        style={{ borderTop: "solid 1px #ddd" }}
-      >
-        <label className="form-text">
-          {"Password remembered ?"} <Link href={"/login"}>login</Link>
-        </label>
-      </div>
+      <Footer>
+        <FooterElement
+          firstText="Password remembered"
+          secondText="login"
+          isborderTop={true}
+          link="/login"
+        />
+      </Footer>
     </FormWrapper>
   );
 };

@@ -19,6 +19,7 @@ const handler = NextAuth({
         },
       },
       async authorize(credentials, req) {
+        console.log("credentials >> ", credentials);
         return await authenticate(credentials);
       },
     }),
@@ -36,8 +37,8 @@ const handler = NextAuth({
 
       return token;
     },
-    session: async ({ session, token }) => {
-      const user = token.user;
+    session: async ({ session, token }: any) => {
+      const user: any = token.user;
       session.user = user;
 
       return session;

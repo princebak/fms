@@ -27,9 +27,9 @@ interface IUser {
   name: string;
   email: string;
   type: string;
-  phone: string?;
-  address: string?;
+  phone?: string;
+  address?: string;
   password: string;
-  profilPicUrl: string?;
-  status: string;
+  profilPicUrl?: string;
+  status?: string;
 }

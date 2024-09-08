@@ -53,8 +53,8 @@ export const fileStatus: FileStatus = {
 };
 
 export const userType: UserType = {
-  ADMIN: "created",
-  USER: "actived",
+  ADMIN: "admin",
+  USER: "user",
 };
 
 export const TOKEN_VALIDITY = 30;

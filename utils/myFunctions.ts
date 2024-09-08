@@ -1,5 +1,8 @@
 import { AnyAaaaRecord } from "dns";
 import { FileExtensionLogo, PAGE_LIMIT, TOKEN_VALIDITY } from "./constants";
+import { FieldValidationResult } from "@/classes";
+import User from "@/models/User";
+import { dbConnector } from "./dbConnector";
 
 export function getFileExtension(filename: string) {
   const match = filename.match(/\.([^./]+)$/);
@@ -166,4 +169,151 @@ export const getFormatedDate = (
   const timeString = time.join(":");
 
   return `${mainDate} ${timeString}`;
+};
+
+type AnyObject = Record<string, any>;
+
+export const areAllFieldsValid = async (
+  form: AnyObject
+): Promise<FieldValidationResult> => {
+  for (const field in form) {
+    console.log(field);
+
+    let comparingValue = "";
+    if (field === "confirmPassword") {
+      comparingValue = form["password"];
+    }
+
+    const res = await isFieldValid(field, form[field], comparingValue);
+    if (!res.isValid) {
+      return res;
+    }
+  }
+
+  return new FieldValidationResult("All fields are valid", true);
+};
+
+export const isFieldValid = async (
+  fieldName: string,
+  fieldValue: string,
+  comparingFieldValue?: string
+): Promise<FieldValidationResult> => {
+  switch (fieldName) {
+    case "email":
+      return await isEmailValid(fieldValue);
+    case "name":
+      return isFullNameValid(fieldValue);
+    case "password":
+      return isPasswordValid(fieldValue);
+    case "confirmPassword":
+      return isConfirmPasswordValid(fieldValue, comparingFieldValue);
+    case "phone":
+      return validatePhone(fieldValue);
+    default:
+      return new FieldValidationResult("Unkown field !", true);
+  }
+};
+
+const isEmailValid = async (email?: string): Promise<FieldValidationResult> => {
+  const regExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  if (!email) {
+    return new FieldValidationResult("An email is required.");
+  }
+  if (email === "updateUser") {
+    return new FieldValidationResult(email, true);
+  }
+  if (!(regExp.test(email) && email.length <= 150)) {
+    return new FieldValidationResult("A valid email is required.");
+  }
+
+  await dbConnector();
+
+  const existingUser = await User.findOne({ email: email });
+  console.log("existingUser >>", existingUser);
+
+  if (existingUser) {
+    return new FieldValidationResult(
+      "This email already exists, change it please."
+    );
+  }
+
+  return new FieldValidationResult(email, true);
+};
+
+const isFullNameValid = (fullName?: string): FieldValidationResult => {
+  if (!fullName) {
+    return new FieldValidationResult("A Name is required.");
+  }
+
+  if (fullName.length > 150) {
+    return new FieldValidationResult(
+      "A Name with at last 150 caracters is required."
+    );
+  }
+  return new FieldValidationResult(fullName, true);
+};
+
+const isPasswordValid = (password?: string): FieldValidationResult => {
+  const regExp: RegExp =
+    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
+
+  if (!password) {
+    return new FieldValidationResult("A password is required.");
+  }
+  if (password === "updateUser") {
+    return new FieldValidationResult(password, true);
+  }
+  console.log("password", password);
+  if (!regExp.test(password)) {
+    return new FieldValidationResult(
+      "A password with 8 to 16 caracters, and at least one Capital letter and one special caracter is required."
+    );
+  }
+
+  return new FieldValidationResult(password, true);
+};
+
+const isConfirmPasswordValid = (
+  confirmPassword: string,
+  password?: string
+): FieldValidationResult => {
+  const regExp: RegExp =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[w@#$!%*?&]{8,}$/gm;
+
+  if (!confirmPassword) {
+    return new FieldValidationResult("A confirmPassword is required.");
+  }
+  if (confirmPassword === "updateUser") {
+    return new FieldValidationResult(confirmPassword, true);
+  }
+  if (confirmPassword != password) {
+    console.log("confirmPassword", { confirmPassword, password });
+    return new FieldValidationResult(
+      "A confirm password must be equal to the password."
+    );
+  }
+
+  return new FieldValidationResult(confirmPassword, true);
+};
+
+const validatePhone = (phone?: string): FieldValidationResult => {
+  if (!phone) {
+    return new FieldValidationResult("A phone number is required !");
+  }
+
+  let phoneNumber = "";
+
+  try {
+    phoneNumber = Math.abs(Number.parseInt(phone)) + "";
+    if (phoneNumber.length > 20) {
+      return new FieldValidationResult(
+        "A phone should have at last 20 characters !"
+      );
+    }
+    return new FieldValidationResult(phone, true);
+  } catch (error) {
+    return new FieldValidationResult(
+      "A valid phone number is required: no space, no other symbole, except '+' as prefix if you want."
+    );
+  }
 };

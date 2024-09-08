@@ -11,127 +11,47 @@ import {
 } from "@/utils/constants";
 import { sendEmailWithEmailJs } from "./NotificationService";
 import AccessToken from "@/models/AccessToken";
-import { dbObjectToJsObject, isTheUserTokenValid } from "@/utils/myFunctions";
+import {
+  areAllFieldsValid,
+  dbObjectToJsObject,
+  isTheUserTokenValid,
+} from "@/utils/myFunctions";
+import { redirect } from "next/navigation";
+import { error } from "console";
 
-const validateEmail = (email?: string) => {
-  const regExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  if (!email) {
-    return false;
-  }
-  if (email === "updateUser") {
-    return true;
-  }
-
-  return regExp.test(email) && email.length <= 150;
+type RegisterPayload = {
+  email: string;
+  name: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
 };
 
-const validateFullName = (fullName?: string) => {
-  if (!fullName) {
-    return false;
-  }
-  return fullName.length <= 150;
-};
-
-const validatePassword = (password?: string) => {
-  if (!password) {
-    return false;
-  }
-  if (password === "updateUser") {
-    return true;
-  }
-  return password.length >= 5;
-};
-
-const validatePhone = (phone?: string) => {
-  if (!phone) {
-    return false;
-  }
-  return phone.length <= 20;
-};
-
-const validateUserType = (type?: string) => {
-  console.log("Type >>", type);
-
-  if (!type) {
-    return false;
-  }
-  if (type === "updateUser") {
-    return true;
-  }
-
-  return true;
-};
-
-const validateForm = async (
-  fullName?: string,
-  email?: string,
-  phone?: string,
-  type?: string,
-  password?: string
-) => {
-  if (!validateUserType(type)) {
-    return {
-      error: "A type in this list[admin, buyer, driver, merchant] is required.",
-    };
-  }
-
-  if (!validateFullName(fullName)) {
-    return { error: "A Name with at last 150 caracters is required." };
-  }
-
-  if (!validateEmail(email)) {
-    return { error: "A valid email is required." };
-  }
-
-  if (!validatePassword(password)) {
-    return {
-      error: "A password with at least 5 caracters is required.",
-    };
-  }
-
-  if (!validatePhone(phone)) {
-    return {
-      error: "A phone number with at last 20 caracters is required.",
-    };
-  }
-
-  const userByEmail = await User.findOne({ email: email });
-
-  if (userByEmail) {
-    return {
-      error: "Change the email please, there is some user with the same.",
-    };
-  }
-
-  return null;
-};
-
-export async function register(data: any) {
-  const { name, email, phone, type, password } = data;
-  await dbConnector();
-
-  const validateFormRes = await validateForm(
-    name,
-    email,
-    phone,
-    type,
-    password
-  );
-
-  if (validateFormRes) {
-    return validateFormRes;
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 12);
-
-  const goodData = {
-    ...data,
-    password: hashedPassword,
-  };
-
-  const newUser = new User(goodData);
+export async function register(data: RegisterPayload) {
+  console.log("Saving Data >> ", data);
 
   try {
+    // Initiate The Db  connection if not already
+    await dbConnector();
+
+    // validating fields
+    const validateRes = await areAllFieldsValid(data);
+    console.log("validateRes > ", validateRes);
+    if (!validateRes.isValid) {
+      return { error: validateRes.message };
+    }
+
+    // Saving...
+
+    const hashedPassword = await bcrypt.hash(data.password, 12);
+
+    const goodData = {
+      ...data,
+      password: hashedPassword,
+    };
+    console.log("Good datA", goodData);
+    const newUser = new User(goodData);
+
     const savedUser = await newUser.save();
 
     await sendEmailWithEmailJs({
@@ -142,10 +62,10 @@ export async function register(data: any) {
 
     const { _id, name, email } = savedUser._doc;
 
-    return { _id, name, email };
+    return dbObjectToJsObject({ _id, name, email, error: null });
   } catch (error: any) {
     console.log("Error >> ", error);
-    return { error: error.message };
+    return { error: "Server error, please try again later." };
   }
 }
 
@@ -154,17 +74,10 @@ export async function updateUser(data: any) {
 
   await dbConnector();
 
-  const validateFormRes = await validateForm(
-    // TODO set a good way to validate for updateUser
-    name,
-    "updateUser",
-    phone,
-    "updateUser",
-    "updateUser"
-  ); // TODO add shop fields
+  const validateFormRes = await areAllFieldsValid({ name, phone });
 
-  if (validateFormRes) {
-    return validateFormRes; // Text response if invalid in error obj
+  if (!validateFormRes.isValid) {
+    return validateFormRes.message;
   }
 
   try {
@@ -242,10 +155,11 @@ export async function sendResetPwLink(email: string) {
 
 export async function authenticate(data: any) {
   await dbConnector();
-
+  console.log("Login Data>> ", data);
   const user = await User.findOne({
     email: data.email,
   }).select("+password");
+  console.log("Found User>> ", user);
 
   if (!user) {
     throw new Error("Email is not registered");

@@ -2,8 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const currentPath = request.nextUrl.pathname;
-  
-  if (currentPath === "/change") {
+
+  if (currentPath === "/dashboard") {
     const localSession = request.cookies.get("next-auth.session-token");
     const onlineSession = request.cookies.get(
       "__Secure-next-auth.session-token"

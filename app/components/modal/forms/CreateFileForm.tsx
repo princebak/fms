@@ -1,3 +1,5 @@
+"use client"
+
 import { findById, updateFileInfo } from "@/services/MyFileService";
 import { fileStatus } from "@/utils/constants";
 import { useRouter } from "next/navigation";

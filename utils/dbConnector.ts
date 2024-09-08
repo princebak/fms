@@ -12,7 +12,7 @@ export const dbConnector = async () => {
     return;
   }
 
-  // const MONGODB_URI = 'mongodb://localhost:27017/fms'
+  //const MONGODB_URI = "mongodb://localhost:27017/fms";
 
   const MONGODB_URI =
     "mongodb+srv://princebak:princebak@bakil-free-cluster.oejtkcq.mongodb.net/fms?retryWrites=true&w=majority";

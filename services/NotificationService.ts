@@ -44,6 +44,7 @@ export async function sendEmailWithEmailJs({
     console.log("Sending msg >> ", msg);
 
     const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method:"POST",
       body: JSON.stringify(msg),
       headers: {
         "Content-Type": "application/json",

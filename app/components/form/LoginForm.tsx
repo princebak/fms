@@ -1,51 +1,122 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
 import FormSubmitButton from "./elements/FormSubmitButton";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import FooterElement from "./elements/FooterElement";
+import Footer from "./elements/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn, useSession } from "next-auth/react";
+import { loginSuccess } from "@/redux/slices/userSlice";
+import { logMessage } from "@/utils/constants";
+import AlertMessage from "../AlertMessage";
+import { AlertMessageClass } from "@/classes";
 
 const LoginForm = () => {
+  // LOGIN FORM FIELDS INITIAL VALUES
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
   const router = useRouter();
-  const handleSubmit = (e: any) => {
+  const { currentUser } = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
+  const { data: session } = useSession();
+  const actived = useSearchParams().get("actived"); // This is the validation token
+
+  const [form, setForm] = useState(initialValues);
+  const [message, setMessage] = useState<AlertMessageClass | undefined | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (
+    (!currentUser && session?.user) ||
+    (currentUser && currentUser.email !== session?.user?.email)
+  ) {
+    dispatch(loginSuccess(session?.user));
+  }
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    router.push("/");
+
+    setIsLoading(true);
+    const loginForm = {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    };
+    const res: any = await signIn("credentials", loginForm);
+
+    if (res.error) {
+      setMessage({ content: res.error, color: "alert-danger" });
+
+      if (res.error === logMessage.USER_NOT_ACTIVE) {
+        router.replace("/validate-email");
+      } else {
+        setIsLoading(false);
+      }
+    } else {
+      setMessage({
+        content: "Logged in with success !",
+        color: "alert-success",
+      });
+      router.push("/dashboard");
+    }
+  };
+
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
-    <FormWrapper formLabel="Login">
-      <form onClick={handleSubmit}>
-        <FormInput
-          id={"email"}
-          name={"email"}
-          type="email"
-          label="Email address"
+    <FormWrapper formLabel="Login" handleSubmit={handleSubmit}>
+      {message && (
+        <AlertMessage content={message.content} color={message?.color} />
+      )}
+
+      {actived && (
+        <AlertMessage
+          content={"Email validation done with success, you can login now."}
+          color={"alert-success"}
         />
+      )}
+      <FormInput
+        id={"email"}
+        name={"email"}
+        type="email"
+        label="Email address"
+        value={form.email}
+        handleChange={handleChange}
+      />
+      <FormInput
+        id={"password"}
+        name={"password"}
+        type="password"
+        label="Password"
+        value={form.password}
+        handleChange={handleChange}
+      />
 
-        <FormInput
-          id={"password"}
-          name={"password"}
-          type="text"
-          label="Passord"
+      <FormSubmitButton label="Submit" isLoading={isLoading} />
+
+      <Footer>
+        <FooterElement
+          firstText="Don't have an account"
+          secondText="signup"
+          isborderTop={true}
+          link="/signup"
         />
-
-        <FormSubmitButton label="Submit" />
-      </form>
-
-      <div
-        className="d-flex flex-column mt-3"
-        style={{ borderTop: "solid 1px #ddd" }}
-      >
-        <label className="form-text">
-          {"Don't have an account ?"} <Link href={"/signup"}>signup</Link>
-        </label>
-        <label className="form-text">
-          {"Password forgotten ?"}{" "}
-          <Link href={"/reset-password"}>reset it</Link>
-        </label>
-      </div>
+        <FooterElement
+          firstText="Password forgotten "
+          secondText="reset it"
+          link="/reset-password"
+        />
+      </Footer>
     </FormWrapper>
   );
 };

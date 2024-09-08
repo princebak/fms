@@ -3,7 +3,10 @@ import { NextResponse } from "next/server";
 import { localLink, userTokenStatus } from "@/utils/constants";
 import { dbConnector } from "@/utils/dbConnector";
 
-export async function GET(req, { params: { token } }) {
+export async function GET(
+  req: any,
+  { params: { token } }: { params: { token: string } }
+) {
   try {
     await dbConnector();
 

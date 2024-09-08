@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import EditUserForm from "@/app/components/modal/forms/EditUserForm";
 import Image from "next/image";

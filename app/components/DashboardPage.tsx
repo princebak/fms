@@ -16,9 +16,9 @@ import {
   getFormatedDate,
   getLastVisitedTimeInterval,
 } from "@/utils/myFunctions";
-import DownloadButton from "./components/DownloadButton";
+import DownloadButton from "@/app/components/DownloadButton";
 
-export default function Home() {
+export default function DashboardPage() {
   const [myFiles, setMyFiles] = useState<any>([]);
   const [recentFiles, setRecentFiles] = useState<any>([]);
 

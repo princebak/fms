@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import CreateFileForm from "@/app/components/modal/forms/CreateFileForm";
 import CreateFolderForm from "@/app/components/modal/forms/CreateFolderForm";
