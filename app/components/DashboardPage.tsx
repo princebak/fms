@@ -22,6 +22,17 @@ export default function DashboardPage() {
   const [myFiles, setMyFiles] = useState<any>([]);
   const [recentFiles, setRecentFiles] = useState<any>([]);
 
+  // Pagination and Search
+  const [page, setPage] = useState<any>(1);
+  const [search, setSearch] = useState<any>("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingRecent, setIsLoadingRecent] = useState(true);
+  const [totalElements, setTotalElements] = useState<any>(0);
+  const [pageLimit, setPageLimit] = useState<any>();
+  const [totalPages, setTotalPages] = useState<any>(0);
+  const [refreshTime, setRefreshTime] = useState<any>(null);
+  const [pages, setPages] = useState([1]);
+
   useEffect(() => {
     const navbar: any = document.getElementById("stickyNavbar");
 
@@ -45,17 +56,6 @@ export default function DashboardPage() {
     // Initial check
     checkScrollPosition();
   }, []);
-
-  // Pagination and Search
-  const [page, setPage] = useState<any>(1);
-  const [search, setSearch] = useState<any>("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingRecent, setIsLoadingRecent] = useState(true);
-  const [totalElements, setTotalElements] = useState<any>(0);
-  const [pageLimit, setPageLimit] = useState<any>();
-  const [totalPages, setTotalPages] = useState<any>(0);
-  const [refreshTime, setRefreshTime] = useState<any>(null);
-  const [pages, setPages] = useState([1]);
 
   const handlePageChange = (e: any, currentPage: number) => {
     e.preventDefault();

@@ -44,7 +44,11 @@ export async function getAllFiles(
   await dbConnector();
 
   const files = await MyFile.find({ status: { $ne: fileStatus.REMOVED } });
+  console.log("all files >>", files);
+
   const filesPerPage = getContentWithPagination(files, page, search);
+  console.log("filesPerPage >>", filesPerPage);
+
   return dbObjectToJsObject(filesPerPage);
 }
 
