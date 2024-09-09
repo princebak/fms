@@ -3,11 +3,7 @@
 import Image from "next/image";
 import CreateFileModal from "@/app/components/modal/CreateFileModal";
 import { useEffect, useState } from "react";
-import {
-  getAllFiles,
-  getRecentFiles,
-  updateFileInfo,
-} from "@/services/MyFileService";
+
 import NoData from "@/app/components/NoData";
 import Loader from "@/app/components/Loader";
 import UpdateFileModal from "@/app/components/modal/UpdateFileModal";
@@ -18,7 +14,11 @@ import {
 } from "@/utils/myFunctions";
 import DownloadButton from "@/app/components/DownloadButton";
 
-export default function DashboardPage() {
+export default function DashboardPage({
+  getAllFiles,
+  getRecentFiles,
+  updateFileInfo,
+}: any) {
   const [myFiles, setMyFiles] = useState<any>([]);
   const [recentFiles, setRecentFiles] = useState<any>([]);
 
