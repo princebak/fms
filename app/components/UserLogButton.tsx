@@ -1,17 +1,21 @@
 "use client";
 
+import { logout } from "@/redux/slices/userSlice";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 const UserLogButton = ({ currentUser }: any) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleClick = (e: any) => {
     e.preventDefault();
     if (currentUser) {
       signOut();
+      dispatch(logout());
     } else {
       router.push("/login");
     }

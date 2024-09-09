@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
 import FormSubmitButton from "./elements/FormSubmitButton";
@@ -27,17 +27,25 @@ const LoginForm = () => {
   const { data: session } = useSession();
   const actived = useSearchParams().get("actived"); // This is the validation token
 
+  const [isJustLoggedIn, setIsJustLoggedIn] = useState(false);
+
   const [form, setForm] = useState(initialValues);
   const [message, setMessage] = useState<AlertMessageClass | undefined | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  if (
-    (!currentUser && session?.user) ||
-    (currentUser && currentUser?.email !== session?.user?.email)
-  ) {
-    dispatch(loginSuccess(session?.user));
-  }
+
+  useEffect(() => {
+    if (isJustLoggedIn) {
+      if (
+        (!currentUser && session?.user) ||
+        (currentUser && currentUser?.email !== session?.user?.email)
+      ) {
+        dispatch(loginSuccess(session?.user));
+      }
+      setIsJustLoggedIn(false);
+    }
+  }, [isJustLoggedIn]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -59,10 +67,8 @@ const LoginForm = () => {
         setIsLoading(false);
       }
     } else {
-      setMessage({
-        content: "Logged in with success !",
-        color: "alert-success",
-      });
+      setIsJustLoggedIn(true);
+
       router.push("/dashboard");
     }
   };
@@ -74,7 +80,7 @@ const LoginForm = () => {
   return (
     <FormWrapper formLabel="Login" handleSubmit={handleSubmit}>
       {message && (
-        <AlertMessage content={message.content} color={message?.color} />
+        <AlertMessage content={message?.content} color={message?.color} />
       )}
 
       {actived && (
