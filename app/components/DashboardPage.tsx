@@ -155,7 +155,7 @@ export default function DashboardPage() {
       ) : myFiles?.length > 0 ? (
         <>
           <div className="row mt-4">
-            {myFiles?.map((file: any, index: number) => (
+            {myFiles??.map((file: any, index: number) => (
               <div key={index} className="col-lg-3 col-sm-6">
                 <div className="card shadow-none border">
                   <div className="card-body p-3">
@@ -277,7 +277,7 @@ export default function DashboardPage() {
                     Previous
                   </a>
                 </li>
-                {pages.map((p) => (
+                {pages?.map((p) => (
                   <li key={p} className="page-item">
                     <a
                       className={`page-link ${p === page ? "active" : ""}`}
@@ -337,7 +337,7 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentFiles.map((file: any) => (
+              {recentFiles?.map((file: any) => (
                 <tr key={file._id}>
                   <td>
                     <a href="#" className="text-dark fw-medium">
