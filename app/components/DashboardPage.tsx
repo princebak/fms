@@ -71,6 +71,7 @@ export default function DashboardPage() {
     let totPages = 0;
     const loadProductList = async () => {
       const res = await getAllFiles("", page, search); // currentUser?._id, page, search //
+      console.log("My FILES>> ", res);
       setMyFiles(res?.content);
       setPageLimit(res?.pageLimit);
       setTotalElements(res?.totalElements);
