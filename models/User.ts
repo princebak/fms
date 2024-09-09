@@ -36,7 +36,6 @@ const userSchema = new Schema<IUser>(
       minLength: 5,
       select: false,
     },
-    profilPicUrl: { type: String },
     status: {
       type: String,
       required: true,

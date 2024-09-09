@@ -24,12 +24,12 @@ interface IAccessToken {
 }
 
 interface IUser {
+  _id: string;
   name: string;
   email: string;
   type: string;
   phone?: string;
   address?: string;
   password: string;
-  profilPicUrl?: string;
   status?: string;
 }

@@ -81,12 +81,13 @@ export async function updateUser(data: any) {
   }
 
   try {
-    const existingUser = await User.findById(data._id);
-    if (existingUser.status === userStatus.ACTIVE && data.shop) {
+    console.log("DATA22 ", data);
+    const existingUser = await User.findById(data.id);
+    if (existingUser.status === userStatus.ACTIVE) {
       data = { ...data, status: userStatus.VALIDATED };
     }
 
-    const savedUser = await User.findByIdAndUpdate(data._id, data, {
+    const savedUser = await User.findByIdAndUpdate(data.id, data, {
       new: true,
     });
 

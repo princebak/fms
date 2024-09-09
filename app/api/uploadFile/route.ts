@@ -10,9 +10,11 @@ export async function POST(req: any) {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const name = formData.get("name") as string;
+    const userId = formData.get("userId");
 
     // Make all the check logics(size...) here on file if needed
     if (!file) {
+      console.log("File not exist");
       return NextResponse.json({ error: "file is missing." }, { status: 400 });
     }
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -27,41 +29,54 @@ export async function POST(req: any) {
      * 5. respond with a message and the downloadUrl
      */
 
-    const savingFileInfo: IMyFile = {
-      name: fileName,
-      type: file.type,
-      extension: extension,
-      size: file.size,
-      isContainer: false,
-      constainer: null,
-      downloadUrl: null,
-      contentNo: 0,
-      visited: new Date(),
-      status: fileStatus.CREATED,
-    };
-    const savedFileInfoRes = await saveFileInfo(savingFileInfo);
-    if (savedFileInfoRes.error) {
-      return NextResponse.json(
-        { error: savedFileInfoRes.error },
-        { status: 400 }
-      );
-    }
+    console.log("USER ID", userId);
+    if (userId) {
+      // the userId exists only on profile pic update
+      const uploadAFileRes = await uploadAFile(buffer, userId, file.type);
 
-    const uploadAFileRes = await uploadAFile(
-      buffer,
-      savedFileInfoRes.id,
-      file.type
-    );
+      if (uploadAFileRes.error) {
+        return NextResponse.json(
+          { error: uploadAFileRes.error },
+          { status: 400 }
+        );
+      }
+    } else {
+      const savingFileInfo: IMyFile = {
+        name: fileName,
+        type: file.type,
+        extension: extension,
+        size: file.size,
+        isContainer: false,
+        constainer: null,
+        downloadUrl: null,
+        contentNo: 0,
+        visited: new Date(),
+        status: fileStatus.CREATED,
+      };
+      const savedFileInfoRes = await saveFileInfo(savingFileInfo);
+      if (savedFileInfoRes.error) {
+        return NextResponse.json(
+          { error: savedFileInfoRes.error },
+          { status: 400 }
+        );
+      }
 
-    if (uploadAFileRes.error) {
-      return NextResponse.json(
-        { error: uploadAFileRes.error },
-        { status: 400 }
+      const uploadAFileRes = await uploadAFile(
+        buffer,
+        savedFileInfoRes.id,
+        file.type
       );
+
+      if (uploadAFileRes.error) {
+        return NextResponse.json(
+          { error: uploadAFileRes.error },
+          { status: 400 }
+        );
+      }
     }
 
     return NextResponse.json(
-      { data: savedFileInfoRes, message: "File uploaded with success!" },
+      { message: "File uploaded with success!" },
       { status: 200 }
     );
   } catch (e: any) {
