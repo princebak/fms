@@ -22,10 +22,10 @@ const EditUserForm = () => {
   // REGISTER FORM FIELDS INITIAL VALUES
 
   const initialValues = {
-    id: currentUser._id,
-    name: currentUser.name,
-    phone: currentUser.phone,
-    address: currentUser.address,
+    id: currentUser?._id,
+    name: currentUser?.name,
+    phone: currentUser?.phone,
+    address: currentUser?.address,
   };
 
   const [form, setForm] = useState(initialValues);
@@ -38,7 +38,7 @@ const EditUserForm = () => {
       const formData = new FormData();
       formData.append("file", userProfileImage);
       formData.append("name", userProfileImage.name);
-      formData.append("userId", currentUser._id);
+      formData.append("userId", currentUser?._id);
 
       const uploadRes = await fetch("/api/uploadFile", {
         method: "POST",

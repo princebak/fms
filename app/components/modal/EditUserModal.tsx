@@ -67,7 +67,7 @@ const EditUserModal = () => {
               className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
               width="100"
               height="100"
-              src={`/api/downloadFile/${currentUser._id}`}
+              src={`/api/downloadFile/${currentUser?._id}`}
               onError={() => setIsUserProfileDefdault(true)}
               alt="Image"
             /> */}

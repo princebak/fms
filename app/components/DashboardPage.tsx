@@ -70,7 +70,7 @@ export default function DashboardPage() {
   useEffect(() => {
     let totPages = 0;
     const loadProductList = async () => {
-      const res = await getAllFiles("", page, search); // currentUser._id, page, search //
+      const res = await getAllFiles("", page, search); // currentUser?._id, page, search //
       setMyFiles(res.content);
       setPageLimit(res.pageLimit);
       setTotalElements(res.totalElements);
@@ -100,7 +100,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const loadRecentFiles = async () => {
-      const res = await getRecentFiles(""); // currentUser._id
+      const res = await getRecentFiles(""); // currentUser?._id
       setRecentFiles(res);
       setIsLoadingRecent(false);
     };
@@ -152,10 +152,10 @@ export default function DashboardPage() {
         <div className="p-8">
           <Loader />
         </div>
-      ) : myFiles.length > 0 ? (
+      ) : myFiles?.length > 0 ? (
         <>
           <div className="row mt-4">
-            {myFiles.map((file: any, index: number) => (
+            {myFiles?.map((file: any, index: number) => (
               <div key={index} className="col-lg-3 col-sm-6">
                 <div className="card shadow-none border">
                   <div className="card-body p-3">

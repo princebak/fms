@@ -34,7 +34,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   if (
     (!currentUser && session?.user) ||
-    (currentUser && currentUser.email !== session?.user?.email)
+    (currentUser && currentUser?.email !== session?.user?.email)
   ) {
     dispatch(loginSuccess(session?.user));
   }
