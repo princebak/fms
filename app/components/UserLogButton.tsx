@@ -18,15 +18,17 @@ const UserLogButton = ({ currentUser }: any) => {
   };
 
   return (
-    <Image
-      className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
-      width="100"
-      height="100"
-      src={`/images/${currentUser ? "logout" : "login"}.png`}
-      alt="Logout"
-      style={{ width: "30px", height: "30px", cursor: "pointer" }}
-      onClick={handleClick}
-    />
+    <div className="userZoneImage ">
+      <Image
+        className="bi d-block mx-auto mb-1 rounded-circle avatar-sm"
+        width="100"
+        height="100"
+        src={`/images/${currentUser ? "logout" : "login"}.png`}
+        alt="Logout"
+        style={{cursor: "pointer" }}
+        onClick={handleClick}
+      />
+    </div>
   );
 };
 

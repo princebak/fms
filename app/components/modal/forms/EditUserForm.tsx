@@ -10,7 +10,7 @@ import Loader from "../../Loader";
 import AlertMessage from "../../AlertMessage";
 import { loginSuccess } from "@/redux/slices/userSlice";
 
-const EditUserForm = ({ toggleModal }: any) => {
+const EditUserForm = () => {
   const dispatch = useDispatch();
   const { data: session, update } = useSession();
   const { currentUser: userInStore } = useSelector((state: any) => state.user);
@@ -64,7 +64,6 @@ const EditUserForm = ({ toggleModal }: any) => {
           content: "User info updated with success.",
           color: "alert-success",
         });
-        //  toggleModal(e);
 
         await update({
           ...session,
@@ -72,8 +71,6 @@ const EditUserForm = ({ toggleModal }: any) => {
             ...res,
           },
         });
-        console.log("currentUser 1 << ", currentUser);
-        console.log("savedUser2 << ", res);
 
         setCurrentUser(res);
       }
@@ -83,7 +80,6 @@ const EditUserForm = ({ toggleModal }: any) => {
   };
 
   useEffect(() => {
-    console.log("In useEffect currentUser << ", currentUser);
     dispatch(loginSuccess(currentUser));
   }, [currentUser]);
 
@@ -92,7 +88,7 @@ const EditUserForm = ({ toggleModal }: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const setDefaultImage = (imageId: string, defaultImagePath: string) => {
+  /*   const setDefaultImage = (imageId: string, defaultImagePath: string) => {
     const image: any = document.getElementById(imageId);
     image.src = defaultImagePath;
   };
@@ -110,7 +106,7 @@ const EditUserForm = ({ toggleModal }: any) => {
 
       setUserProfileImage(imageFile);
     }
-  };
+  }; */
 
   return (
     <form
@@ -123,13 +119,16 @@ const EditUserForm = ({ toggleModal }: any) => {
         style={{ borderBottom: "solid 1px #ddd" }}
       >
         <label style={{ color: "black" }}>Edit user Info</label>
-        {isLoading ? (
-          <label>Loading...</label>
-        ) : (
-          <button type="submit" className="btn btn-primary">
-            Update
-          </button>
-        )}
+
+        <div style={{ color: "gray" }}>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <button type="submit" className="btn btn-primary">
+              Update
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="d-flex flex-column gap-2 p-2">

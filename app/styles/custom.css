@@ -36,6 +36,12 @@
   max-width: 500px;
 }
 
+.userZoneImage {
+  width: 40px;
+  height: 30px;
+  cursor: "pointer";
+}
+
 /*For test only, to remove*/
 .redBorder {
   border: solid red 1px;
