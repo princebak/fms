@@ -71,12 +71,12 @@ export default function DashboardPage() {
     let totPages = 0;
     const loadProductList = async () => {
       const res = await getAllFiles("", page, search); // currentUser?._id, page, search //
-      setMyFiles(res.content);
-      setPageLimit(res.pageLimit);
-      setTotalElements(res.totalElements);
-      setPage(res.currentPage);
-      setTotalPages(res.totalPages);
-      totPages = res.totalPages;
+      setMyFiles(res?.content);
+      setPageLimit(res?.pageLimit);
+      setTotalElements(res?.totalElements);
+      setPage(res?.currentPage);
+      setTotalPages(res?.totalPages);
+      totPages = res?.totalPages;
 
       return true;
     };
@@ -323,7 +323,7 @@ export default function DashboardPage() {
           <div className="p-8">
             <Loader />
           </div>
-        ) : recentFiles.length < 1 ? (
+        ) : recentFiles?.length < 1 ? (
           <NoData />
         ) : (
           <table className="table align-middle table-nowrap table-hover mb-0">
