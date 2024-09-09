@@ -155,7 +155,7 @@ export default function DashboardPage() {
       ) : myFiles?.length > 0 ? (
         <>
           <div className="row mt-4">
-            {myFiles??.map((file: any, index: number) => (
+            {myFiles?.map((file: any, index: number) => (
               <div key={index} className="col-lg-3 col-sm-6">
                 <div className="card shadow-none border">
                   <div className="card-body p-3">
