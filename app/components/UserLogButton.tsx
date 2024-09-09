@@ -25,7 +25,7 @@ const UserLogButton = ({ currentUser }: any) => {
         height="100"
         src={`/images/${currentUser ? "logout" : "login"}.png`}
         alt="Logout"
-        style={{cursor: "pointer" }}
+        style={{ cursor: "pointer" }}
         onClick={handleClick}
       />
     </div>

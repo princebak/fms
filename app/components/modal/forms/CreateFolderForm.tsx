@@ -8,7 +8,9 @@ const CreateFolderForm = () => {
       className="bd-example d-flex flex-column gap-2"
       style={{ border: "solid 1px #ddd", borderRadius: "5px" }}
     >
-      <div
+      <h4>COMING SOON...</h4>
+
+      {/*  <div
         className="d-flex justify-between p-2"
         style={{ borderBottom: "solid 1px #ddd" }}
       >
@@ -25,7 +27,7 @@ const CreateFolderForm = () => {
           placeholder="Enter Folder name"
           required
         />
-      </div>
+      </div> */}
     </div>
   );
 };

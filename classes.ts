@@ -1,4 +1,5 @@
 export class UserClass implements IUser {
+  _id: string = "";
   name: string = "";
   email: string = "";
   type: string = "";
