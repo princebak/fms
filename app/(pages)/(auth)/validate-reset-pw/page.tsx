@@ -1,4 +1,5 @@
 import ValidateResetPwForm from "@/app/components/form/ValidateResetPwForm";
+import { sendEmailWithEmailJs } from "@/services/NotificationService";
 import React from "react";
 
 export const metadata = {
@@ -6,7 +7,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <ValidateResetPwForm />;
+  return <ValidateResetPwForm sendEmailWithEmailJs={sendEmailWithEmailJs} />;
 };
 
 export default page;

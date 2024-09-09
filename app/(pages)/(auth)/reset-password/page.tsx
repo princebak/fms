@@ -1,4 +1,5 @@
 import ResetPasswordForm from "@/app/components/form/ResetPasswordForm";
+import { sendResetPwLink } from "@/services/UserService";
 import React from "react";
 
 export const metadata = {
@@ -6,7 +7,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <ResetPasswordForm />;
+  return <ResetPasswordForm sendResetPwLink={sendResetPwLink}/>;
 };
 
 export default page;

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
 import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
@@ -8,11 +7,10 @@ import FormSubmitButton from "./elements/FormSubmitButton";
 import { useRouter } from "next/navigation";
 import FooterElement from "./elements/FooterElement";
 import Footer from "./elements/Footer";
-import { sendResetPwLink } from "@/services/UserService";
 import { AlertMessageClass } from "@/classes";
 import AlertMessage from "../AlertMessage";
 
-const ResetPasswordForm = () => {
+const ResetPasswordForm = ({ sendResetPwLink }: any) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<AlertMessageClass | null>(null);

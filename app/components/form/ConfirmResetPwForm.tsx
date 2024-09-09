@@ -9,9 +9,8 @@ import FooterElement from "./elements/FooterElement";
 import Footer from "./elements/Footer";
 import AlertMessage from "../AlertMessage";
 import { AlertMessageClass } from "@/classes";
-import { changePassword } from "@/services/UserService";
 
-const ConfimResetPwForm = () => {
+const ConfimResetPwForm = ({ changePassword }: any) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<AlertMessageClass | null>(null);

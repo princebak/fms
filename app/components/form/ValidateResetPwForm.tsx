@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { sendEmailWithEmailJs } from "@/services/NotificationService";
 import { emailMetadata } from "@/utils/constants";
 import Link from "next/link";
 import FormWrapper from "@/app/components/form/FormWrapper";
@@ -10,7 +9,7 @@ import { AlertMessageClass } from "@/classes";
 import Loader from "../Loader";
 import AlertMessage from "../AlertMessage";
 
-const ValidateResetPwForm = () => {
+const ValidateResetPwForm = ({ sendEmailWithEmailJs }: any) => {
   const { justRegisteredUser } = useSelector((state: any) => state.user);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<AlertMessageClass | null>(null);

@@ -1,4 +1,5 @@
 import ValidateEmailForm from "@/app/components/form/ValidateEmailForm";
+import { sendEmailWithEmailJs } from "@/services/NotificationService";
 import React from "react";
 
 export const metadata = {
@@ -6,7 +7,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <ValidateEmailForm />;
+  return <ValidateEmailForm sendEmailWithEmailJs={sendEmailWithEmailJs}/>;
 };
 
 export default page;

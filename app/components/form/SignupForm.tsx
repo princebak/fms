@@ -1,13 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
 import FormWrapper from "./FormWrapper";
 import FormInput from "./elements/FormInput";
 import FormSubmitButton from "./elements/FormSubmitButton";
 import { useRouter } from "next/navigation";
-import { register } from "@/services/UserService";
-import Loader from "../Loader";
 import { useDispatch } from "react-redux";
 import { updateJustRegisteredUser } from "@/redux/slices/userSlice";
 import Footer from "./elements/Footer";
@@ -15,7 +12,7 @@ import FooterElement from "./elements/FooterElement";
 import AlertMessage from "../AlertMessage";
 import { AlertMessageClass } from "@/classes";
 
-const SignupForm = () => {
+const SignupForm = ({ register }: any) => {
   const initialValues = {
     name: "",
     email: "",
