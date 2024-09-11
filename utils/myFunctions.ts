@@ -316,3 +316,16 @@ const validatePhone = (phone?: string): FieldValidationResult => {
     );
   }
 };
+
+export const isTheSubscriptionValid = (subscription: ISubscription) => {
+  const expireAt = new Date(subscription.expireAt);
+  const currentDate = new Date();
+  const diff = currentDate.getTime() < expireAt.getTime();
+
+  console.log("{expireAt, currentDate, diff} >> ", {
+    expireAt,
+    currentDate,
+    diff,
+  });
+  return diff;
+};

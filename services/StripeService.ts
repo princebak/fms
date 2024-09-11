@@ -1,9 +1,10 @@
 "use server";
+
 const stripe = require("stripe")(
   "sk_test_51IsqFIHteDFlXfC5zL98LXzjs3bQqVJNAFX28RUQfRb5OI6frnJWTTJu3xfldDcxO9bRdYlMRr4tRdtQeOv9jAhx00TNO6NyO5"
 );
 
-export async function createPaymentIntent(amount: string) {
+export async function createPaymentIntent(amount: any) {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,

@@ -13,8 +13,9 @@ import { loginSuccess } from "@/redux/slices/userSlice";
 import { logMessage } from "@/utils/constants";
 import AlertMessage from "../AlertMessage";
 import { AlertMessageClass } from "@/classes";
+import { updateSubscription } from "@/redux/slices/subscriptionSlice";
 
-const LoginForm = () => {
+const LoginForm = ({ getUserLastActiveSubscription }: any) => {
   // LOGIN FORM FIELDS INITIAL VALUES
   const initialValues = {
     email: "",
@@ -26,9 +27,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const actived = useSearchParams().get("actived"); // This is the validation token
-
   const [isJustLoggedIn, setIsJustLoggedIn] = useState(false);
-
   const [form, setForm] = useState(initialValues);
   const [message, setMessage] = useState<AlertMessageClass | undefined | null>(
     null
@@ -36,15 +35,38 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (isJustLoggedIn) {
-      if (
-        (!currentUser && session?.user) ||
-        (currentUser && currentUser?.email !== session?.user?.email)
-      ) {
-        dispatch(loginSuccess(session?.user));
+    const loadUserLastActiveSubscription = async () => {
+      const user: any = session?.user;
+      const lastActiveSubscription: any = await getUserLastActiveSubscription(
+        user?._id
+      );
+      console.log(
+        "useEffect lastActiveSubscription  >>",
+        lastActiveSubscription
+      );
+      if (lastActiveSubscription) {
+        dispatch(
+          updateSubscription(updateSubscription(lastActiveSubscription))
+        );
       }
-      setIsJustLoggedIn(false);
-    }
+    };
+
+    const loadUserInReduxStore = async () => {
+      if (isJustLoggedIn) {
+        if (
+          (!currentUser && session?.user) ||
+          (currentUser && currentUser?.email !== session?.user?.email)
+        ) {
+          dispatch(loginSuccess(session?.user));
+        }
+
+        await loadUserLastActiveSubscription();
+
+        setIsJustLoggedIn(false);
+      }
+    };
+
+    loadUserInReduxStore();
   }, [isJustLoggedIn]);
 
   const handleSubmit = async (e: any) => {

@@ -97,3 +97,16 @@ export const localLink = {
   //APP_BASE_PATH: "http://localhost:3000",
   APP_BASE_PATH: "https://fms-taupe.vercel.app",
 };
+
+export const paymentMethod = {
+  CREDIT_CARD: "credit-card",
+};
+
+export const subscriptionStatus = {
+  PAID: "paid",
+  ACTIVE: "active",
+  EXPIRED: "expired",
+};
+
+export const SUBSCRIPTION_AMOUNT = 50;
+export const SUBSCRIPTION_DAYS = 30;

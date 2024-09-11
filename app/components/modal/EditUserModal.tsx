@@ -6,13 +6,21 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import UserLogButton from "../UserLogButton";
 import { useSelector } from "react-redux";
+import SubscribButton from "../SubscribButton";
+import { getFormatedDate } from "@/utils/myFunctions";
+import { subscriptionStatus } from "@/utils/constants";
 
 const EditUserModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { currentUser } = useSelector((state: any) => state.user);
+  const { currentSubscription } = useSelector(
+    (state: any) => state.subscription
+  );
   const [isUserProfileDefdault, setIsUserProfileDefdault] = useState(false);
   const currentPath = usePathname();
+
+  console.log("subscription user ", currentSubscription);
 
   const toggleModal = (e: any | undefined) => {
     if (e) {
@@ -99,6 +107,34 @@ const EditUserModal = () => {
               style={{ boxShadow: "0 0 40px gray" }}
             >
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                {currentSubscription ? (
+                  <label className="alert alert-primary w-full">
+                    {`Subscription exp. : ${getFormatedDate(
+                      currentSubscription?.expireAt,
+                      true,
+                      true
+                    )}`}
+                  </label>
+                ) : (
+                  <label className="alert alert-warning w-full">
+                    {"Your subscription expired."}
+                  </label>
+                )}
+                {/*
+                <label
+                  className={`${
+                    currentSubscription?.status === subscriptionStatus.ACTIVE
+                      ? "text-primary"
+                      : "text-warning"
+                  }`}
+                >
+                  {`Subscription exp. : ${getFormatedDate(
+                    currentSubscription?.expireAt,
+                    true,
+                    true
+                  )}`}
+                </label>
+                */}
                 <EditUserForm />{" "}
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 d-flex justify-content-between ">
@@ -114,7 +150,7 @@ const EditUserModal = () => {
                     Dashboard
                   </button>
                 ) : (
-                  <label>{""}</label>
+                  <SubscribButton />
                 )}
 
                 <button

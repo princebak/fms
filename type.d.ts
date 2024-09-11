@@ -33,3 +33,10 @@ interface IUser {
   password: string;
   status?: string;
 }
+
+interface ISubscription {
+  owner: IUser;
+  expireAt: Date;
+  status: string?;
+  paymentMethod: string?;
+}

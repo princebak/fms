@@ -1,12 +1,21 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import CreateFileForm from "@/app/components/modal/forms/CreateFileForm";
 import CreateFolderForm from "@/app/components/modal/forms/CreateFolderForm";
 import Accordion from "@/app/components/accordion/Accordion";
+import { useSelector } from "react-redux";
+import { subscriptionStatus } from "@/utils/constants";
+import Link from "next/link";
+import SubscribButton from "../SubscribButton";
+import Image from "next/image";
 
 const CreateFileModal = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentSubscription } = useSelector(
+    (state: any) => state.subscription
+  );
+
   const accordionItems = [
     {
       title: "New File",
@@ -25,9 +34,18 @@ const CreateFileModal = () => {
 
   return (
     <>
-      <button className="btn btn-primary" onClick={toggleModal}>
-        + Create new
-      </button>
+      {currentSubscription?.status === subscriptionStatus.ACTIVE ? (
+        <button className="btn btn-primary d-flex gap-1" onClick={toggleModal}>
+          <div style={{ width: "25px" }}>
+            <Image src="/images/add.png" width={100} height={100} alt="add" />
+          </div>
+
+          <label>Create new</label>
+        </button>
+      ) : (
+        <SubscribButton />
+      )}
+
       {isOpen && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

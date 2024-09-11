@@ -1,5 +1,6 @@
 "use client";
 
+import { updateSubscription } from "@/redux/slices/subscriptionSlice";
 import { logout } from "@/redux/slices/userSlice";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
@@ -16,6 +17,7 @@ const UserLogButton = ({ currentUser }: any) => {
     if (currentUser) {
       signOut();
       dispatch(logout());
+      dispatch(updateSubscription(null));
     } else {
       router.push("/login");
     }
