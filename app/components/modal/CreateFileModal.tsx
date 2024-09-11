@@ -36,11 +36,11 @@ const CreateFileModal = () => {
     <>
       {currentSubscription?.status === subscriptionStatus.ACTIVE ? (
         <button className="btn btn-primary d-flex gap-1" onClick={toggleModal}>
-          <div style={{ width: "25px" }}>
+          <div style={{ width: "25px", cursor: "pointer" }}>
             <Image src="/images/add.png" width={100} height={100} alt="add" />
           </div>
 
-          <label>Create new</label>
+          <label style={{ cursor: "pointer" }}>Create new</label>
         </button>
       ) : (
         <SubscribButton />

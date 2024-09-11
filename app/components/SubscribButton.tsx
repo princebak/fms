@@ -5,7 +5,7 @@ import React from "react";
 const SubscribButton = () => {
   return (
     <Link className="btn btn-success d-flex gap-1" href={"/payment"}>
-      <div style={{ width: "25px" }}>
+      <div style={{ width: "25px", cursor: "pointer" }}>
         <Image
           src="/images/subscription.png"
           width={100}
@@ -13,7 +13,7 @@ const SubscribButton = () => {
           alt="subscription"
         />
       </div>
-      <label>Subscribe</label>
+      <label style={{ cursor: "pointer" }}>Subscribe</label>
     </Link>
   );
 };
