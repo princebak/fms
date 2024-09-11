@@ -12,7 +12,6 @@ export async function GET(
     await dbConnector();
 
     const userAccessToken = await AccessToken.findById(token).populate("owner");
-    console.log("userAccessToken Api >> ", userAccessToken);
 
     const user = userAccessToken.owner;
 
@@ -24,7 +23,6 @@ export async function GET(
       const activeUser = await User.findByIdAndUpdate(user._id, {
         status: userStatus.ACTIVE,
       });
-      console.log("Actived User >> ", activeUser);
       await AccessToken.findByIdAndUpdate(userAccessToken._id, {
         status: userTokenStatus.USED,
       });

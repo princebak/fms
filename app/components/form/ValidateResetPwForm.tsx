@@ -34,7 +34,6 @@ const ValidateResetPwForm = ({ sendEmailWithEmailJs }: any) => {
     }
     setIsLoading(false);
 
-    console.log("validation code resent");
   };
 
   return (

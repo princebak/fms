@@ -10,11 +10,12 @@ import Loader from "../../Loader";
 import AlertMessage from "../../AlertMessage";
 import { loginSuccess } from "@/redux/slices/userSlice";
 
-const EditUserForm = () => {
+const EditUserForm = ({ closeModal }: any) => {
   const dispatch = useDispatch();
   const { data: session, update } = useSession();
   const { currentUser: userInStore } = useSelector((state: any) => state.user);
   const [currentUser, setCurrentUser] = useState(userInStore);
+  const [currentUserUpdated, setCurrentUserUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<AlertMessageClass | null>(null);
   const [userProfileImage, setUserProfileImage] = useState<File | null>(null);
@@ -55,7 +56,6 @@ const EditUserForm = () => {
     }
 
     if (shouldUpdate) {
-      console.log("Updating DATA88", form);
       const res = await updateUser(form);
       if (res.error) {
         setMessage({ content: res.error, color: "alert-danger" });
@@ -73,6 +73,7 @@ const EditUserForm = () => {
         });
 
         setCurrentUser(res);
+        setCurrentUserUpdated(true);
       }
     }
 
@@ -80,8 +81,13 @@ const EditUserForm = () => {
   };
 
   useEffect(() => {
-    dispatch(loginSuccess(currentUser));
-  }, [currentUser]);
+    console.log("currentUser OK > ", currentUser);
+    if (currentUserUpdated) {
+      dispatch(loginSuccess(currentUser));
+      closeModal();
+      setCurrentUserUpdated(false);
+    }
+  }, [currentUserUpdated]);
 
   const handleChange = (e: any) => {
     e.preventDefault();

@@ -6,11 +6,10 @@ import CreateFolderForm from "@/app/components/modal/forms/CreateFolderForm";
 import Accordion from "@/app/components/accordion/Accordion";
 import { useSelector } from "react-redux";
 import { subscriptionStatus } from "@/utils/constants";
-import Link from "next/link";
 import SubscribButton from "../SubscribButton";
 import Image from "next/image";
 
-const CreateFileModal = () => {
+const CreateFileModal = ({ refreshData }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const { currentSubscription } = useSelector(
     (state: any) => state.subscription
@@ -19,11 +18,25 @@ const CreateFileModal = () => {
   const accordionItems = [
     {
       title: "New File",
-      content: <CreateFileForm id={null} />,
+      content: (
+        <CreateFileForm
+          closeModal={() => {
+            setIsOpen(false);
+          }}
+          refreshData={refreshData}
+          id={null}
+        />
+      ),
     },
     {
       title: "New Folder",
-      content: <CreateFolderForm />,
+      content: (
+        <CreateFolderForm
+          closeModal={() => {
+            setIsOpen(false);
+          }}
+        />
+      ),
     },
   ];
 

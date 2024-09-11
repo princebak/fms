@@ -41,7 +41,6 @@ export async function sendEmailWithEmailJs({
 
   try {
     // Then we Send email
-    console.log("Sending msg >> ", msg);
 
     const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
       method:"POST",
@@ -50,7 +49,6 @@ export async function sendEmailWithEmailJs({
         "Content-Type": "application/json",
       },
     });
-    console.log("Sent mail response >>", res);
 
     return { msg: "Mail sent with success !" };
   } catch (error) {

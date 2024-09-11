@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const CreateFolderForm = () => {
+const CreateFolderForm = ({ closeModal }: any) => {
   return (
     <div
       className="bd-example d-flex flex-column gap-2"

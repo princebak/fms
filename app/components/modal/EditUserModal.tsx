@@ -20,8 +20,6 @@ const EditUserModal = () => {
   const [isUserProfileDefdault, setIsUserProfileDefdault] = useState(false);
   const currentPath = usePathname();
 
-  console.log("subscription user ", currentSubscription);
-
   const toggleModal = (e: any | undefined) => {
     if (e) {
       e.preventDefault();
@@ -32,7 +30,6 @@ const EditUserModal = () => {
   useEffect(() => {
     if (isUserProfileDefdault) {
       const profilePic: any = document.getElementById("profilePic");
-      console.log("profilePic <<", profilePic.id);
       profilePic.src = "/images/default_user.png";
     }
   }, [isUserProfileDefdault]);
@@ -135,7 +132,7 @@ const EditUserModal = () => {
                   )}`}
                 </label>
                 */}
-                <EditUserForm />{" "}
+                <EditUserForm closeModal={() => setIsOpen(false)} />{" "}
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 d-flex justify-content-between ">
                 {currentPath != "/dashboard" ? (
@@ -150,7 +147,11 @@ const EditUserModal = () => {
                     Dashboard
                   </button>
                 ) : (
-                  <SubscribButton />
+                  <SubscribButton
+                    closeModal={() => {
+                      setIsOpen(false);
+                    }}
+                  />
                 )}
 
                 <button

@@ -97,7 +97,7 @@ export const getLastVisitedTimeInterval = (
   lastVisitedDateTime: Date | undefined | null
 ) => {
   if (!lastVisitedDateTime) {
-    return "Not read yet";
+    return "Not yet read";
   }
   const currentDateTime = new Date();
   const lastVisitedDateTimeGood = new Date(lastVisitedDateTime);
@@ -176,8 +176,6 @@ export const areAllFieldsValid = async (
   form: AnyObject
 ): Promise<FieldValidationResult> => {
   for (const field in form) {
-    console.log(field);
-
     let comparingValue = "";
     if (field === "confirmPassword") {
       comparingValue = form["password"];
@@ -228,7 +226,6 @@ const isEmailValid = async (email?: string): Promise<FieldValidationResult> => {
   await dbConnector();
 
   const existingUser = await User.findOne({ email: email });
-  console.log("existingUser >>", existingUser);
 
   if (existingUser) {
     return new FieldValidationResult(
@@ -262,7 +259,6 @@ const isPasswordValid = (password?: string): FieldValidationResult => {
   if (password === "updateUser") {
     return new FieldValidationResult(password, true);
   }
-  console.log("password", password);
   if (!regExp.test(password)) {
     return new FieldValidationResult(
       "A password with 8 to 16 caracters, and at least one Capital letter and one special caracter is required."
@@ -286,7 +282,6 @@ const isConfirmPasswordValid = (
     return new FieldValidationResult(confirmPassword, true);
   }
   if (confirmPassword != password) {
-    console.log("confirmPassword", { confirmPassword, password });
     return new FieldValidationResult(
       "A confirm password must be equal to the password."
     );
@@ -322,10 +317,5 @@ export const isTheSubscriptionValid = (subscription: ISubscription) => {
   const currentDate = new Date();
   const diff = currentDate.getTime() < expireAt.getTime();
 
-  console.log("{expireAt, currentDate, diff} >> ", {
-    expireAt,
-    currentDate,
-    diff,
-  });
   return diff;
 };

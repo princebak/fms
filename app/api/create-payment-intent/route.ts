@@ -5,8 +5,6 @@ export async function POST(request: any) {
   try {
     const { amount } = await request.json();
 
-    console.log("Subscribing amount >> ", amount);
-
     const paymentIntent = await createPaymentIntent(amount);
     if (paymentIntent.error) {
       throw Error(paymentIntent.error);

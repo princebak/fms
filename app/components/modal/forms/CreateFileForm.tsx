@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
 import { findById, updateFileInfo } from "@/services/MyFileService";
 import { fileStatus } from "@/utils/constants";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
 
 const CreateFileForm = ({ id, closeModal, refreshData }: any) => {
   const [file, setFile] = useState<File>();
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter();
+  // const submitBtn = useRef
 
   const closeModalAndReload = () => {
     closeModal();
@@ -18,6 +18,7 @@ const CreateFileForm = ({ id, closeModal, refreshData }: any) => {
   };
 
   const handleSubmit = async (e: any) => {
+    console.log("Sub");
     e.preventDefault();
     setIsLoading(true);
     if (file) {
@@ -58,7 +59,10 @@ const CreateFileForm = ({ id, closeModal, refreshData }: any) => {
   };
 
   const handleDelete = async (e: any) => {
+    e.preventDefault();
+
     setIsLoading(true);
+
     const res = await updateFileInfo({ id: id, status: fileStatus.REMOVED });
     if (res.error) {
       setMessage("Bad request.");
@@ -81,6 +85,8 @@ const CreateFileForm = ({ id, closeModal, refreshData }: any) => {
     };
     loadFilInfo();
   }, []);
+
+  console.log();
 
   return (
     <form onSubmit={handleSubmit}>

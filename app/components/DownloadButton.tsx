@@ -15,7 +15,6 @@ const DownloadButton = ({
 
   const handleClick = async () => {
     try {
-      console.log("Downloading :", downloadLink);
       setIsLoading(true);
       const response = await fetch(downloadLink);
       const arrayBuffer = await response.arrayBuffer();

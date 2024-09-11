@@ -29,7 +29,6 @@ export async function POST(req: any) {
      * 5. respond with a message and the downloadUrl
      */
 
-    console.log("USER ID", userId);
     if (userId) {
       // the userId exists only on profile pic update
       const uploadAFileRes = await uploadAFile(buffer, userId, file.type);

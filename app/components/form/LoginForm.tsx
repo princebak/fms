@@ -40,10 +40,7 @@ const LoginForm = ({ getUserLastActiveSubscription }: any) => {
       const lastActiveSubscription: any = await getUserLastActiveSubscription(
         user?._id
       );
-      console.log(
-        "useEffect lastActiveSubscription  >>",
-        lastActiveSubscription
-      );
+  
       if (lastActiveSubscription) {
         dispatch(
           updateSubscription(updateSubscription(lastActiveSubscription))

@@ -23,7 +23,6 @@ export async function saveFileInfo(myFile: IMyFile) {
 
 // even for Delete and change last visited Date
 export async function updateFileInfo(myFile: any) {
-  console.log("myFile ", myFile);
   try {
     await dbConnector();
 

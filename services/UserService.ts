@@ -28,7 +28,6 @@ type RegisterPayload = {
 };
 
 export async function register(data: RegisterPayload) {
-  console.log("Saving Data >> ", data);
 
   try {
     // Initiate The Db  connection if not already
@@ -36,7 +35,6 @@ export async function register(data: RegisterPayload) {
 
     // validating fields
     const validateRes = await areAllFieldsValid(data);
-    console.log("validateRes > ", validateRes);
     if (!validateRes.isValid) {
       return { error: validateRes.message };
     }
@@ -49,7 +47,6 @@ export async function register(data: RegisterPayload) {
       ...data,
       password: hashedPassword,
     };
-    console.log("Good datA", goodData);
     const newUser = new User(goodData);
 
     const savedUser = await newUser.save();
@@ -81,7 +78,6 @@ export async function updateUser(data: any) {
   }
 
   try {
-    console.log("DATA22 ", data);
     const existingUser = await User.findById(data.id);
     if (existingUser.status === userStatus.ACTIVE) {
       data = { ...data, status: userStatus.VALIDATED };
@@ -90,8 +86,6 @@ export async function updateUser(data: any) {
     const savedUser = await User.findByIdAndUpdate(data.id, data, {
       new: true,
     });
-
-    console.log("savedUser .. ", savedUser);
 
     return dbObjectToJsObject(savedUser._doc);
   } catch (error: any) {
@@ -113,7 +107,6 @@ export async function changePassword(data: {
     );
     // validating fields
     const validateRes = await areAllFieldsValid(data);
-    console.log("validateRes > ", validateRes);
     if (!validateRes.isValid) {
       return { error: validateRes.message };
     }
@@ -161,11 +154,9 @@ export async function sendResetPwLink(email: string) {
 
 export async function authenticate(data: any) {
   await dbConnector();
-  console.log("Login Data>> ", data);
   const user = await User.findOne({
     email: data.email,
   }).select("+password");
-  console.log("Found User>> ", user);
 
   if (!user) {
     throw new Error("Email is not registered");

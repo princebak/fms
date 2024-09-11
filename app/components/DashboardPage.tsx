@@ -130,7 +130,7 @@ export default function DashboardPage({
           style={{ minWidth: "300px", maxWidth: "600px" }}
         />
 
-        <CreateFileModal />
+        <CreateFileModal refreshData={() => setRefreshTime(new Date())} />
       </div>
 
       <div className="d-flex flex-wrap">

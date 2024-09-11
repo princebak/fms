@@ -33,7 +33,6 @@ const SignupForm = ({ register }: any) => {
     e.preventDefault();
     if (!isLoading) {
       setIsLoading(true);
-      console.log("Submitting form >> ", form);
 
       const res: any = await register(form);
 

@@ -25,7 +25,6 @@ export async function createSubscription(subscription: ISubscription) {
 export async function activeSubscription(id: string) {
   try {
     await dbConnector();
-    console.log("Id >>", id);
 
     let res = await Subscription.findById(id);
 
@@ -50,7 +49,6 @@ export async function renewSubscription(id: string, days: number) {
   try {
     await dbConnector();
 
-    console.log("newExpiredDate >>", days);
     const millisecondsToAdd = days * 24 * 60 * 60 * 1000;
 
     let lastActiveSubscription = await Subscription.findById(id);
@@ -79,7 +77,6 @@ export async function renewSubscription(id: string, days: number) {
 export async function getUserLastActiveSubscription(userId: string) {
   try {
     await dbConnector();
-    console.log("userId >>", userId);
 
     let existingActiveSubscription = await Subscription.findOne({
       owner: userId,

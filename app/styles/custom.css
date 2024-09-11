@@ -37,12 +37,14 @@
 }
 
 .userZoneImage {
- /*  width: 40px;
+  /*  width: 40px;
   height: 30px;
   cursor: "pointer"; */
 }
 
 /*For test only, to remove*/
 .redBorder {
-  border: solid red 1px;
+  border: solid red 2px;
+  background-color: yellow;
+  padding: 5px;
 }

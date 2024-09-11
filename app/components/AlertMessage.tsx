@@ -7,10 +7,6 @@ const AlertMessage = ({
   content?: string;
   color?: string;
 }) => {
-  console.log("Message >> ", {
-    content,
-    color,
-  });
   return (
     <div aria-live="polite" className={`alert ${color}`} role="alert">
       {content}
