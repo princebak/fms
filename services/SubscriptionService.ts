@@ -55,13 +55,13 @@ export async function renewSubscription(id: string, days: number) {
 
     let lastActiveSubscription = await Subscription.findById(id);
     const newExpiredDate: Date =
-      lastActiveSubscription.expiredAt.getTime() + millisecondsToAdd;
+      lastActiveSubscription.expireAt.getTime() + millisecondsToAdd;
 
     if (lastActiveSubscription.status === subscriptionStatus.ACTIVE) {
       lastActiveSubscription = await Subscription.findByIdAndUpdate(
         id,
         {
-          expiredAt: newExpiredDate,
+          expireAt: newExpiredDate,
         },
         { new: true }
       ).populate("owner");

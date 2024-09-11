@@ -72,7 +72,7 @@ export default function CreditCardForm({
         lastActiveSubscription &&
         lastActiveSubscription.status === subscriptionStatus.ACTIVE
       ) {
-        // if there is an active subsciption, extends its expired date only
+        // if there is an active subsciption, extends its expiration date only
 
         const renewedSubscription = await renewSubscription(
           lastActiveSubscription._id,
